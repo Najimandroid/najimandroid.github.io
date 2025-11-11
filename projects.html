@@ -1,47 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects | Najim</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects | Najim Bakkali</title>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
     <nav>
         <a href="index.html">Home</a>
-        <a href="projects.html">Projects</a>
+        <a href="projects.html" class="active">Projects</a>
         <a href="contact.html">Contact</a>
     </nav>
 
     <main>
         <h1>Projects</h1>
+        <div class="project-list">
+            <a href="projects/project-fishfighters.html" class="project-card">
+                <img src="img/temp.png" alt="Fish Fighters thumbnail">
+                <div>
+                    <h3>Fish Fighters (C++)</h3>
+                    <p>2D fighting game prototype with a custom SFML-based engine.</p>
+                </div>
+            </a>
 
-        <section>
-            <h2>Fish Fighters – 2D Engine in C++</h2>
-            <p>
-                Developed a simple 2D engine using SFML, featuring a State Machine, multiple Managers, and a basic UI system.
-                Designed the project with modular and maintainable architecture, built with CMake and versioned with Git.
-                Available on GitHub and itch.io.
-            </p>
-        </section>
-
-        <section>
-            <h2>Uni-Wave Prototype – Unity (C#)</h2>
-            <p>
-                Built a mobile “gamified” calendar app prototype in Unity.
-                Designed the internal architecture, implemented time management using the Unity API,
-                and delivered a fully functional prototype for concept validation.
-            </p>
-        </section>
-
-        <section>
-            <h2>Learn Dev 3D – Unity Internship</h2>
-            <p>
-                Created and published complete Unity projects on itch.io.
-                Wrote educational scripts for Unity tutorials on the YouTube channel “Drag ‘N Drop”.
-                Strengthened my C# and project architecture skills while contributing to accessible learning resources.
-            </p>
-        </section>
+            <a href="#" class="project-card">
+                <img src="img/temp.png" alt="Calendar App thumbnail">
+                <div>
+                    <h3>Gamified Calendar (Unity)</h3>
+                    <p>Mobile app prototype developed during my internship at Uni-Wave.</p>
+                </div>
+            </a>
+        </div>
     </main>
 </body>
 </html>
