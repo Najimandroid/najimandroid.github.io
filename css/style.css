@@ -100,3 +100,19 @@ footer {
         font-size: 1rem;
     }
 }
+
+.btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.8rem 1.5rem;
+    background-color: #00bcd4;
+    color: #121212;
+    font-weight: bold;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: #0097a7;
+    }
