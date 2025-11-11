@@ -1,158 +1,143 @@
-/* GLOBAL STYLE */
-* {
+/* ========== GLOBAL STYLE ========== */
+html {
+    background-color: #0e0e0e; /* Empêche le flash blanc avant le chargement */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0e0e0e;
+    color: #f0f0f0;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    background-color: #0e0e10;
-    color: #e4e4e7;
-    min-height: 100vh;
-    animation: fadeIn 0.4s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-/* NAVBAR */
-nav {
-    background-color: #151518;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid #2a2a2d;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-    nav a {
-        color: #b5b5bc;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s ease;
-    }
-
-        nav a:hover,
-        nav a.active {
-            color: #ffffff;
-        }
-
-/* MAIN CONTENT */
-main {
-    max-width: 850px;
-    margin: 4rem auto;
-    text-align: center;
-    padding: 0 1rem;
-}
-
-h1 {
-    font-size: 2.2rem;
-    margin-bottom: 0.3rem;
-}
-
-h2 {
-    font-size: 1.3rem;
-    color: #999;
-    margin-bottom: 1rem;
-}
-
-p {
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    color: #ccc;
-}
-
-/* BUTTON */
-.btn {
-    display: inline-block;
-    padding: 0.6rem 1.2rem;
-    background-color: #27272a;
-    color: #f1f1f1;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-}
-
-    .btn:hover {
-        background-color: #3a3a3d;
-    }
-
-/* PROJECT LIST */
-.project-list {
+    opacity: 0;
+    transition: opacity 0.6s ease;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+}
+
+    /* Quand la page est chargée */
+    body.loaded {
+        opacity: 1;
+    }
+
+/* ========== HEADER & NAVBAR ========== */
+header {
+    background-color: #181818;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+    header h1 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+nav a {
+    color: #f0f0f0;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+    nav a:hover {
+        color: #00bcd4;
+    }
+
+/* ========== MAIN CONTENT ========== */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+    main h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+    }
+
+    main p {
+        font-size: 1rem;
+        max-width: 700px;
+        line-height: 1.6;
+        color: #cccccc;
+    }
+
+/* ========== PROJECT GRID (for project list page) ========== */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
     margin-top: 2rem;
 }
 
 .project-card {
-    display: flex;
-    align-items: center;
-    background-color: #1a1a1d;
+    background-color: #181818;
     border-radius: 10px;
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
     .project-card:hover {
-        background-color: #232326;
-        transform: translateY(-3px);
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
     }
 
     .project-card img {
-        width: 160px;
-        height: 90px;
+        width: 100%;
+        height: 160px;
         object-fit: cover;
     }
 
-    .project-card div {
-        text-align: left;
-        padding: 1rem;
-    }
-
     .project-card h3 {
+        margin: 1rem;
         font-size: 1.1rem;
-        margin-bottom: 0.3rem;
+        color: #ffffff;
     }
 
-    .project-card p {
-        font-size: 0.9rem;
-        color: #aaa;
-    }
-
-/* PROJECT DETAIL PAGE */
-.project-img {
-    width: 100%;
-    max-width: 700px;
-    border-radius: 10px;
-    margin: 1.5rem 0;
+/* ========== FOOTER ========== */
+footer {
+    background-color: #181818;
+    color: #888;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-top: 1px solid #222;
 }
 
-/* RESPONSIVE */
-@media (max-width: 700px) {
-    .project-card {
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    header {
         flex-direction: column;
+        align-items: flex-start;
     }
 
-        .project-card img {
-            width: 100%;
-            height: auto;
-        }
+    nav a {
+        margin: 0.5rem 0 0 0;
+        display: block;
+    }
 
-    main {
-        margin: 2rem auto;
+    main h2 {
+        font-size: 1.8rem;
+    }
+
+    main p {
+        font-size: 0.95rem;
     }
 }
