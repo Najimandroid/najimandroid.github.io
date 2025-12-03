@@ -113,9 +113,9 @@ footer {
     transition: background-color 0.3s ease;
 }
 
-.btn:hover {
-    background-color: #0097a7;
-}
+    .btn:hover {
+      background-color: #0097a7;
+    }
 
 /* Project page formatting */
 .project-page {
@@ -160,3 +160,32 @@ footer {
         border: 1px solid #333;
     }
 
+/* Section dividers */
+.project-block {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #2e2e2e;
+}
+
+.project-page section:first-of-type {
+    border-top: 1px solid #2e2e2e;
+    padding-top: 2rem;
+}
+
+.project-block {
+    margin-bottom: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #2e2e2e;
+}
+
+.project-img {
+    width: 100%;
+    max-width: 700px;
+    border-radius: 8px;
+    margin: 2rem 0;
+    border: 1px solid #2e2e2e;
+}
+
+.tech-list li {
+    margin: 0.5rem 0;
+}

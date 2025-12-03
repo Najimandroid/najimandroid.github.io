@@ -6,80 +6,110 @@
     <title>Fish Fighters | Najim Bakkali</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
 
+<body>
     <nav>
         <a href="../index.html">Home</a>
         <a href="../projects.html">Projects</a>
         <a href="../contact.html">Contact</a>
     </nav>
 
-    <main class="project-page">
+    <main>
+        <h1>Fish Fighters</h1>
+        <h2>Personal Project – C++ | SFML 3.0 | Custom 2D Engine</h2>
 
-        <!-- Header section -->
-        <section class="project-header">
-            <h1>Fish Fighters</h1>
-            <h2>C++ | SFML | Custom 2D Engine</h2>
-            <img src="../img/temp.png" alt="Fish Fighters screenshot" class="project-hero-img">
-        </section>
+        <img src="../img/temp.png" alt="Fish Fighters preview" class="project-img">
 
-        <!-- Overview -->
-        <section class="project-block">
-            <h3>Overview</h3>
+        <p>
+            Fish Fighters started as a personal challenge to learn how to structure a larger game project.
+            I wanted to move beyond short school assignments and explore what it means to write clean,
+            modular, and maintainable code for a real game.
+            The result is a tower defense prototype inspired by the mobile game The Battle Cats: simple enough
+            to build alone, yet complex enough to test architecture, systems, and workflows.
+        </p>
+
+        <hr>
+
+        <section>
+            <h3>Project Goal</h3>
             <p>
-                Write the general introduction to the game here.
-                Describe the type of game, your main goals, the engine you created,
-                and what makes the project interesting from a technical and gameplay perspective.
+                The primary goal was not to build a highly complex game, but to understand how to design a
+                proper codebase.
+                I focused on clean architecture, clear separation of responsibilities, and a level of
+                modularity that would allow the game to evolve without rewriting everything each time.
+            </p>
+            <p>
+                A tower defense game was a perfect fit. It is achievable on my own, but still involves enough
+                systems to create real engineering challenges.
             </p>
         </section>
 
-        <!-- Responsibilities -->
-        <section class="project-block">
-            <h3>My Responsibilities</h3>
-            <p>
-                Write the details of what you personally developed in the game:
-                systems, architecture, gameplay logic, tools, UI, engine components, etc.
-            </p>
-        </section>
+        <hr>
 
-        <!-- Key Features List -->
-        <section class="project-block">
-            <h3>Key Features</h3>
+        <section>
+            <h3>What I Built</h3>
+            <p>
+                I developed everything myself using C++20 and SFML 3.0.
+                The project helped me implement several essential systems for 2D game development.
+            </p>
+
             <ul>
-                <li>Write a feature of the game or engine here.</li>
-                <li>Another feature...</li>
-                <li>More technical or gameplay features...</li>
+                <li>
+                    A state machine for all battle entities
+                    (BaseState → AttackState, WalkingState, IdleState, etc.)
+                </li>
+                <li>
+                    A custom animation system using TextureRects to scroll through spritesheets
+                </li>
+                <li>
+                    A modular UI framework (UIElement → UIButton, UITexture, UIText) handled by a UIManager
+                </li>
+                <li>
+                    A DataLoader powered by nlohmann::json to load units, enemies, levels, and player saves
+                </li>
+                <li>
+                    A level system managing enemy waves and battle flow
+                </li>
+                <li>
+                    A built-in debug UI using ImGui (spawn entities, give resources, load levels, adjust stats)
+                </li>
+                <li>
+                    Tweeny integration for quick, smooth UI and gameplay animations
+                </li>
+            </ul>
+
+            <p>
+                One of the results I am most proud of is the modularity:
+                I can add a new enemy, unit, or level simply by editing a JSON file.
+                No code changes required. That was a core objective from the start, and it works beautifully.
+            </p>
+        </section>
+
+        <hr>
+
+        <section>
+            <h3>Technologies</h3>
+            <ul>
+                <li>C++20</li>
+                <li>SFML 3.0</li>
+                <li>ImGui</li>
+                <li>Tweeny</li>
+                <li>Nlohmann JSON</li>
             </ul>
         </section>
 
-        <!-- Technical Details -->
-        <section class="project-block">
-            <h3>Technical Details</h3>
-            <p>
-                Write the breakdown of the engine or code architecture here.
-                Example: state machine, managers, input handling, rendering pipeline, asset loading, etc.
-            </p>
+        <hr>
+
+        <section>
+            <h3>Notes to Expand Later</h3>
+            <p>Write the detailed game design intentions here…</p>
+            <p>Write the advanced technical breakdown once the code has been reviewed…</p>
+            <p>Write the challenges encountered and the lessons learned…</p>
         </section>
 
-        <!-- Gallery -->
-        <section class="project-block">
-            <h3>Gallery</h3>
-            <div class="gallery">
-                <img src="../img/temp.png" alt="Screenshot 1">
-                <img src="../img/temp.png" alt="Screenshot 2">
-                <img src="../img/temp.png" alt="Screenshot 3">
-            </div>
-        </section>
+        <hr>
 
-        <!-- External Links -->
-        <section class="project-block">
-            <h3>Links</h3>
-            <a href="https://github.com/Najimandroid/Fish_Fighters"
-               class="btn" target="_blank">
-                View on GitHub
-            </a>
-        </section>
-
+        <a href="https://github.com/Najimandroid/Fish_Fighters" target="_blank" class="btn">View on GitHub</a>
     </main>
 
     <footer>
