@@ -1,177 +1,107 @@
-/* Global reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* General layout */
+/* Global layout */
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #121212;
-    color: #e0e0e0;
-    padding-top: 80px; /* Navigation offset */
+    padding: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.7;
+    background-color: #f5f5f5;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* NAVIGATION */
+/* Navigation */
 nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #1a1a1a;
-    padding: 1rem 0;
-    border-bottom: 1px solid #2e2e2e;
-    z-index: 1000;
+    gap: 20px;
+    padding: 20px;
+    background-color: #222;
 }
 
     nav a {
-        color: #f0f0f0;
+        color: #fff;
         text-decoration: none;
-        margin: 0 1.5rem;
-        font-size: 1rem;
-        transition: color 0.3s ease;
+        font-weight: bold;
     }
 
-        nav a:hover,
-        nav a.active {
-            color: #00bcd4;
+        nav a:hover {
+            text-decoration: underline;
         }
 
-/* MAIN */
+/* Main content */
 main {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 4rem 1rem;
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 40px;
 }
 
-/* HEADINGS & TEXT */
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #ffffff;
+/* Titles and spacing */
+.project-title {
+    font-size: 2.4rem;
+    margin-bottom: 10px;
 }
 
-h2 {
-    margin-bottom: 1.2rem;
-    color: #ffffff;
+.project-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 40px;
 }
 
-h3 {
-    margin-top: 2rem;
-    margin-bottom: 0.8rem;
-    color: #ffffff;
+/* Sections */
+.project-section {
+    margin-bottom: 60px;
 }
 
-/* paragraph spacing */
-p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    max-width: 800px;
-    margin-bottom: 1.2rem;
-    color: #d0d0d0;
+/* Blocks with bigger spacing */
+.project-block {
+    margin-bottom: 60px;
 }
 
-/* FOOTER */
-footer {
-    margin-top: auto;
-    text-align: center;
-    padding: 1rem 0;
-    font-size: 0.9rem;
-    color: #888;
-    border-top: 1px solid #2e2e2e;
+    .project-block h2 {
+        margin-bottom: 20px;
+    }
+
+    .project-block h3 {
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+
+    /* Paragraph spacing */
+    .project-block p {
+        margin-bottom: 18px;
+    }
+
+/* Divider */
+.section-divider {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    margin: 50px 0;
 }
 
-/* BUTTON */
+/* Button */
 .btn {
     display: inline-block;
-    margin-top: 2rem;
-    padding: 0.8rem 1.5rem;
-    background-color: #00bcd4;
-    color: #121212;
-    font-weight: bold;
-    border-radius: 8px;
+    padding: 12px 22px;
+    background-color: #222;
+    color: #fff;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: 0.2s;
 }
 
     .btn:hover {
-        background-color: #0097a7;
+        background-color: #444;
     }
 
-/* PROJECT PAGE */
-.project-page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 4rem 1rem;
-    text-align: left;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    nav {
-        flex-direction: column;
-    }
-
-        nav a {
-            margin: 0.5rem 0;
-        }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    p {
-        font-size: 1rem;
-    }
-}
-
-/* SECTIONS — clean, consistent spacing */
-.project-block {
-    margin-bottom: 3rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid #2e2e2e;
-}
-
-/* First section: give breathing room on top */
-.project-page section:first-of-type {
-    padding-top: 2.5rem;
-    border-top: 1px solid #2e2e2e;
-}
-
-/* IMAGES */
-.project-hero-img,
-.project-img {
-    width: 100%;
-    max-width: 700px;
-    border-radius: 8px;
-    margin: 2rem 0;
-    border: 1px solid #2e2e2e;
-}
-
-/* GALLERY */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-}
-
-    .gallery img {
-        width: 100%;
-        border-radius: 8px;
-        border: 1px solid #333;
-    }
-
-/* TECH LIST */
-.tech-list li {
-    margin: 0.5rem 0;
+/* Footer always at the bottom */
+footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
 }
