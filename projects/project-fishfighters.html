@@ -1,115 +1,151 @@
-<section class="project-section">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Fighters | Najim Bakkali</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
 
-    <h1 class="project-title">Modular Tower Defense</h1>
-    <p class="project-subtitle">A personal C++ gameplay architecture study built with SFML.</p>
+<body class="project-page">
 
-    <hr class="section-divider">
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="../projects.html">Projects</a>
+        <a href="../contact.html">Contact</a>
+    </nav>
 
-    <section class="project-block">
-        <h2>Overview</h2>
-        <p>
-            Fish Fighters started as a personal challenge to push myself beyond the short, contained projects I had done before.
-            I wanted to understand what it really takes to structure a larger game, the kind that forces you to think ahead
-            instead of just writing code until it works.
-        </p>
-        <p>
-            A tower-defense game inspired by <em>The Battle Cats</em> felt like the perfect project.
-            It’s simple enough to build alone, but it hides just enough complexity to make you think carefully about architecture,
-            game flow, and data organization. I’ve always loved this game, and creating my own version was a great excuse to learn
-            while also having fun with a concept I care about.
-        </p>
-        <p>
-            This project wasn’t about making the flashiest game possible. It was about learning how to build something clean and modular,
-            something that could grow without collapsing under its own weight. Looking back, it became a huge milestone in my progression
-            as a developer.
-        </p>
-    </section>
+    <main>
 
-    <hr class="section-divider">
+        <!-- TITLE + SUBTITLE -->
+        <section class="project-section">
 
-    <section class="project-block">
-        <h2>Development Goals</h2>
-        <p>
-            From the beginning, my main intention was to write code that felt professional.
-            Not “student project” code, not something you only understand two weeks later — but something structured,
-            readable, and maintainable.
-        </p>
-        <p>
-            I wanted to understand how to separate responsibilities properly, avoid hard-coding logic everywhere,
-            make systems modular enough to extend, and create a workflow where adding a new feature doesn’t break everything else.
-        </p>
-        <p>
-            Choosing JSON for all the game data (units, enemies, levels, and even player save data) came naturally.
-            I love how readable the format is, and it fits perfectly with my goal of keeping the game flexible:
-            adding a new enemy or unit requires zero changes in the code. Just update the JSON file and the game adapts.
-        </p>
-        <p>
-            That level of modularity was something I had never achieved before, and I’m truly proud of it.
-        </p>
-    </section>
+            <h1 class="project-title">Modular Tower Defense</h1>
+            <p class="project-subtitle">A personal C++ gameplay architecture study built with SFML.</p>
 
-    <hr class="section-divider">
+            <hr class="section-divider">
 
-    <section class="project-block">
-        <h2>Core Systems</h2>
+            <section class="project-block">
+                <h2>Overview</h2>
+                <p>
+                    Fish Fighters started as a personal challenge to push myself beyond the short, contained projects I had done before.
+                    I wanted to understand what it really takes to structure a larger game, the kind that forces you to think ahead
+                    instead of just writing code until it works.
+                </p>
+                <p>
+                    A tower-defense game inspired by <em>The Battle Cats</em> felt like the perfect project.
+                    It’s simple enough to build alone, but it hides just enough complexity to make you think carefully about architecture,
+                    game flow, and data organization. I’ve always loved this game, and creating my own version was a great excuse to learn
+                    while also having fun with a concept I care about.
+                </p>
+                <p>
+                    This project wasn’t about making the flashiest game possible. It was about learning how to build something clean and modular,
+                    something that could grow without collapsing under its own weight. Looking back, it became a huge milestone in my progression
+                    as a developer.
+                </p>
+            </section>
 
-        <h3>State Machine for Battle Entities</h3>
-        <p>
-            Each entity (unit or enemy) uses a dedicated state machine with states such as Idle, Walking, or Attack.
-            This helped me better understand behavior-driven architecture and how to cleanly express logic.
-        </p>
+            <hr class="section-divider">
 
-        <h3>Animation System</h3>
-        <p>
-            Animations rely on texture rectangles to scroll through frames inside a sprite atlas — simple but solid.
-        </p>
+            <section class="project-block">
+                <h2>Development Goals</h2>
+                <p>
+                    From the beginning, my main intention was to write code that felt professional.
+                    Not “student project” code, not something you only understand two weeks later — but something structured,
+                    readable, and maintainable.
+                </p>
+                <p>
+                    I wanted to understand how to separate responsibilities properly, avoid hard-coding logic everywhere,
+                    make systems modular enough to extend, and create a workflow where adding a new feature doesn’t break everything else.
+                </p>
+                <p>
+                    Choosing JSON for all the game data (units, enemies, levels, and even player save data) came naturally.
+                    I love how readable the format is, and it fits perfectly with my goal of keeping the game flexible:
+                    adding a new enemy or unit requires zero changes in the code. Just update the JSON file and the game adapts.
+                </p>
+                <p>
+                    That level of modularity was something I had never achieved before, and I’m truly proud of it.
+                </p>
+            </section>
 
-        <h3>UI System</h3>
-        <p>
-            I built a small UI framework with a central UIManager for creating buttons, textures, and text elements quickly.
-            It allowed me to prototype menus and interactable elements without cluttering the core game logic.
-        </p>
+            <hr class="section-divider">
 
-        <h3>Data-Driven Architecture</h3>
-        <p>
-            All gameplay data lives in JSON files parsed by a DataLoader system.
-            New units, enemies, and levels can be added entirely through JSON without touching the codebase.
-        </p>
+            <section class="project-block">
+                <h2>Core Systems</h2>
 
-        <h3>Level System</h3>
-        <p>
-            The LevelController handles wave spawning, pacing, difficulty, and combat flow — all driven by JSON files.
-        </p>
+                <h3>State Machine for Battle Entities</h3>
+                <p>
+                    Each entity (unit or enemy) uses a dedicated state machine with states such as Idle, Walking, or Attack.
+                    This helped me better understand behavior-driven architecture and how to cleanly express logic.
+                </p>
 
-        <h3>Debug Tools</h3>
-        <p>
-            Using ImGui, I built an in-game debug overlay that lets me spawn units, edit player resources,
-            jump between levels, and toggle features for rapid iteration.
-        </p>
+                <h3>Animation System</h3>
+                <p>
+                    Animations rely on texture rectangles to scroll through frames inside a sprite atlas — simple but solid.
+                </p>
 
-    </section>
+                <h3>UI System</h3>
+                <p>
+                    I built a small UI framework with a central UIManager for creating buttons, textures, and text elements quickly.
+                    It allowed me to prototype menus and interactable elements without cluttering the core game logic.
+                </p>
 
-    <hr class="section-divider">
+                <h3>Data-Driven Architecture</h3>
+                <p>
+                    All gameplay data lives in JSON files parsed by a DataLoader system.
+                    New units, enemies, and levels can be added entirely through JSON without touching the codebase.
+                </p>
 
-    <section class="project-block">
-        <h2>What I Learned</h2>
-        <p>
-            This project represents a major step in my evolution as a programmer.
-            It strengthened my understanding of clean architecture, modularity, and long-term maintainability.
-            It also taught me the value of data-driven workflows and how to design systems that scale gracefully.
-        </p>
-        <p>
-            I’m proud of how far this project pushed me. Fish Fighters may be a modest prototype,
-            but it helped me understand the difference between “writing code to make things happen”
-            and “designing systems that support a whole game”.
-        </p>
-    </section>
+                <h3>Level System</h3>
+                <p>
+                    The LevelController handles wave spawning, pacing, difficulty, and combat flow — all driven by JSON files.
+                </p>
 
-    <hr class="section-divider">
+                <h3>Debug Tools</h3>
+                <p>
+                    Using ImGui, I built an in-game debug overlay that lets me spawn units, edit player resources,
+                    jump between levels, and toggle features for rapid iteration.
+                </p>
 
-    <section class="project-block">
-        <h2>Technologies</h2>
-        <p><strong>C++20, SFML 3.0, ImGui, Tweeny, nlohmann/json, CMake</strong></p>
-    </section>
+            </section>
 
-</section>
+            <hr class="section-divider">
+
+            <section class="project-block">
+                <h2>What I Learned</h2>
+                <p>
+                    This project represents a major step in my evolution as a programmer.
+                    It strengthened my understanding of clean architecture, modularity, and long-term maintainability.
+                    It also taught me the value of data-driven workflows and how to design systems that scale gracefully.
+                </p>
+                <p>
+                    I’m proud of how far this project pushed me. Fish Fighters may be a modest prototype,
+                    but it helped me understand the difference between “writing code to make things happen”
+                    and “designing systems that support a whole game”.
+                </p>
+            </section>
+
+            <hr class="section-divider">
+
+            <section class="project-block">
+                <h2>Technologies</h2>
+                <p><strong>C++20, SFML 3.0, ImGui, Tweeny, nlohmann/json, CMake</strong></p>
+            </section>
+
+        </section>
+
+        <!-- GITHUB -->
+        <section class="project-block">
+            <a href="https://github.com/Najimandroid/Fish_Fighters" class="btn" target="_blank">
+                View Source on GitHub
+            </a>
+        </section>
+
+    </main>
+
+    <footer>
+        © Najim Bakkali 2025
+    </footer>
+
+</body>
+</html>
