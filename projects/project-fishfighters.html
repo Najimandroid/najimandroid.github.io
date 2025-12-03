@@ -69,13 +69,135 @@
 
             <hr class="section-divider">
 
+            <section id="technical-choices" style="color: #ffffff; max-width: 900px; margin: 80px auto; text-align: center;">
+
+                <h2 style="font-size: 2.4rem; margin-bottom: 20px;">Technical Approach</h2>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    This project is where I learned how to build a game the way real developers do it:
+                    with clear systems, predictable behavior, and code that survives growth.
+                    Instead of writing one long file that does everything at once, I focused on creating
+                    a structure where each element has its own responsibility and can evolve independently.
+                </p>
+
+                <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 25px;">
+                    Most of the core logic is written in modern C++, relying on smart pointers, RAII
+                    principles, and a clean separation between gameplay logic and rendering.
+                    I wanted to avoid anything fragile, so each system communicates through simple,
+                    intentional interfaces that reduce hidden dependencies.
+                    The goal was to build a codebase that feels stable, predictable, and pleasant to expand.
+                </p>
+
+                <h3 style="font-size: 1.8rem; margin-top: 50px;">Architecture Philosophy</h3>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    The project follows a lightweight, component-inspired structure.
+                    Units, enemies, and projectiles each expose a clear API, while managers handle the
+                    heavy lifting such as updates, collisions, and timing.
+                    This separation allows me to iterate fast without breaking unrelated systems.
+                </p>
+
+                <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 15px;">
+                    I aimed for something simple, but not simplistic.
+                    The code is intentionally straightforward, yet organized with enough discipline to feel scalable.
+                    Every class is small, focused, and named to reflect its purpose.
+                    And whenever something felt ambiguous, I refactored it until the intent was clear.
+                </p>
+
+                <h3 style="font-size: 1.8rem; margin-top: 50px;">Tools and Technologies</h3>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    I built the project with Visual Studio 2022 using CMake as the build system.
+                    The rendering layer uses SFML, chosen for its simplicity and flexibility.
+                    CMake was especially important to me: it taught me how real-world projects manage
+                    dependencies, organization, and build portability.
+                </p>
+
+                <h3 style="font-size: 1.8rem; margin-top: 50px;">Code Style and Conventions</h3>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    The code follows a consistent style inspired by modern C++ guidelines:
+                    class names in PascalCase, functions and variables in camelCase,
+                    and private fields prefixed with <code>m_</code>.
+                    It may sound strict, but keeping this discipline made the entire project easier to read
+                    and reason about, especially as the codebase grew.
+                </p>
+
+                <h3 style="font-size: 1.8rem; margin-top: 50px;">Why It Matters</h3>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    This project is more than code.
+                    It represents the moment I understood that game development is not just about making things move on screen;
+                    it is about designing systems that feel coherent and alive under the hood.
+                    Building Fish Fighters taught me how to think like an engineer, not just a programmer.
+                </p>
+
+            </section>
+
+            <hr class="section-divider">
+
             <section class="project-block">
                 <h2>Core Systems</h2>
 
                 <h3>State Machine for Battle Entities</h3>
-                <p>
-                    Each entity (unit or enemy) uses a dedicated state machine with states such as Idle, Walking, or Attack.
-                    This helped me better understand behavior-driven architecture and how to cleanly express logic.
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    One of the first problems I encountered while building the gameplay was the growing
+                    complexity of my entity behaviors.
+                    Each unit needed to move, attack, idle, die...
+                    Managing all of this with a huge chain of conditions or a giant switch statement
+                    quickly becomes messy, rigid, and hard to maintain.
+                    That is exactly why I built a dedicated state machine system.
+                </p>
+
+                <h4 style="font-size: 1.8rem; margin-top: 50px;">Why I Created a State Machine</h4>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    A state machine gives each behavior its own place to exist.
+                    Instead of scattering logic across multiple files or stuffing every possible action
+                    inside one enormous update function, each state becomes a small, focused object
+                    that handles a single responsibility.
+                    This reduces complexity, eliminates fragile condition chains, and makes the logic
+                    much easier to read and extend.
+                </p>
+
+                <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 15px;">
+                    More importantly, switching behavior becomes explicit and intentional.
+                    Instead of jumping between conditions, I can say:
+                    <em>this entity is attacking now</em> or <em>this entity being knockbacked now</em>.
+                    That clarity makes the whole game feel more predictable and stable under the hood.
+                </p>
+
+                <h4 style="font-size: 1.8rem; margin-top: 50px;">How I Designed It</h4>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    The system is built around a simple base class called <code>BaseState</code>.
+                    Each state implements three clear functions: <code>enter()</code>, <code>ppdate()</code>,
+                    and <code>exit()</code>.
+                    The <code>StateMachine</code> class holds a unique pointer to the current state and
+                    handles transitions by calling the proper exit and enter routines.
+                    Using smart pointers ensures clean ownership, prevents leaks, and keeps transitions safe.
+                </p>
+
+                <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 15px;">
+                    Each entity (such as a unit or enemy) owns its own state machine, which means behaviors
+                    are entirely self-contained.
+                    When the entity needs to change behavior, it simply requests a transition, and the state
+                    machine handles everything cleanly behind the scenes.
+                </p>
+
+                <h4 style="font-size: 1.8rem; margin-top: 50px;">Why This Approach Matters</h4>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    This architecture makes behavior modular.
+                    I can add new states without disturbing the existing ones,
+                    rewrite a behavior without breaking anything else,
+                    or experiment with alternative logic just by swapping state classes.
+                    The code becomes easier to debug, easier to extend, and much easier to reason about.
+                </p>
+
+                <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 15px;">
+                    And in a project where gameplay is constantly evolving, that flexibility is invaluable.
+                    It allows the game to grow naturally instead of collapsing under its own complexity.
                 </p>
 
                 <h3>Animation System</h3>
