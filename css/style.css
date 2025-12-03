@@ -109,3 +109,11 @@ footer {
     background-color: #151515;
     border-top: 1px solid #333333;
 }
+
+code {
+    color: #ffcc66; /* warm highlight that stands out on dark backgrounds */
+    background-color: #1e1e1e;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+}
