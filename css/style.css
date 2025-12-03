@@ -11,20 +11,20 @@ body {
     font-family: 'Segoe UI', sans-serif;
     background-color: #121212;
     color: #e0e0e0;
-    text-align: center;
-    padding-top: 80px; /* espace pour ne pas que le contenu passe sous la nav */
+    padding-top: 80px; /* Navigation offset */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
-/* Top navigation bar */
+
+/* NAVIGATION */
 nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     display: flex;
-    justify-content: center; /* centre les liens */
+    justify-content: center;
     align-items: center;
     background-color: #1a1a1a;
     padding: 1rem 0;
@@ -40,39 +40,48 @@ nav {
         transition: color 0.3s ease;
     }
 
-        nav a:hover {
-            color: #00bcd4;
-        }
-
+        nav a:hover,
         nav a.active {
             color: #00bcd4;
         }
 
-/* Main content */
+/* MAIN */
 main {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
     padding: 4rem 1rem;
 }
 
-/* Headings and text */
+/* HEADINGS & TEXT */
 h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: #ffffff;
 }
 
+h2 {
+    margin-bottom: 1.2rem;
+    color: #ffffff;
+}
+
+h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.8rem;
+    color: #ffffff;
+}
+
+/* paragraph spacing */
 p {
     font-size: 1.1rem;
     line-height: 1.6;
     max-width: 800px;
+    margin-bottom: 1.2rem;
     color: #d0d0d0;
 }
 
-/* Footer */
+/* FOOTER */
 footer {
     margin-top: auto;
     text-align: center;
@@ -82,7 +91,32 @@ footer {
     border-top: 1px solid #2e2e2e;
 }
 
-/* Responsive adjustments */
+/* BUTTON */
+.btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.8rem 1.5rem;
+    background-color: #00bcd4;
+    color: #121212;
+    font-weight: bold;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: #0097a7;
+    }
+
+/* PROJECT PAGE */
+.project-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 1rem;
+    text-align: left;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     nav {
         flex-direction: column;
@@ -101,53 +135,30 @@ footer {
     }
 }
 
-.btn {
-    display: inline-block;
-    margin-top: 2rem;
-    padding: 0.8rem 1.5rem;
-    background-color: #00bcd4;
-    color: #121212;
-    font-weight: bold;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-    .btn:hover {
-      background-color: #0097a7;
-    }
-
-/* Project page formatting */
-.project-page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 4rem 1rem;
-    text-align: left;
-}
-
-.project-header {
-    text-align: center;
+/* SECTIONS — clean, consistent spacing */
+.project-block {
     margin-bottom: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #2e2e2e;
 }
 
-.project-hero-img {
+/* First section: give breathing room on top */
+.project-page section:first-of-type {
+    padding-top: 2.5rem;
+    border-top: 1px solid #2e2e2e;
+}
+
+/* IMAGES */
+.project-hero-img,
+.project-img {
     width: 100%;
     max-width: 700px;
     border-radius: 8px;
-    margin-top: 1.5rem;
+    margin: 2rem 0;
+    border: 1px solid #2e2e2e;
 }
 
-/* Standard section blocks */
-.project-block {
-    margin-bottom: 3rem;
-}
-
-    .project-block h3 {
-        margin-bottom: 1rem;
-        color: #ffffff;
-    }
-
-/* Gallery */
+/* GALLERY */
 .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -160,32 +171,7 @@ footer {
         border: 1px solid #333;
     }
 
-/* Section dividers */
-.project-block {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #2e2e2e;
-}
-
-.project-page section:first-of-type {
-    border-top: 1px solid #2e2e2e;
-    padding-top: 2rem;
-}
-
-.project-block {
-    margin-bottom: 3rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid #2e2e2e;
-}
-
-.project-img {
-    width: 100%;
-    max-width: 700px;
-    border-radius: 8px;
-    margin: 2rem 0;
-    border: 1px solid #2e2e2e;
-}
-
+/* TECH LIST */
 .tech-list li {
     margin: 0.5rem 0;
 }
