@@ -26,12 +26,44 @@
             <p class="project-subtitle">A personal C++ tower defense project built with SFML.</p>
 
             <!-- IMAGE CAROUSEL -->
-            <div class="carousel">
-                <!-- Placeholder until you add real images -->
-                <img src="../img/temp.png" alt="Fish Fighters Screenshot">
-                <img src="../img/temp.png" alt="Fish Fighters Screenshot">
-                <img src="../img/temp.png" alt="Fish Fighters Screenshot">
+            <div class="carousel-container">
+
+                <!-- Radio buttons -->
+                <input type="radio" name="slides" id="slide1" checked>
+                <input type="radio" name="slides" id="slide2">
+                <input type="radio" name="slides" id="slide3">
+
+                <!-- Slides -->
+                <div class="carousel-slides">
+
+                    <div class="carousel-slide">
+                        <img src="../img/temp.png" alt="Fish Fighters Screenshot">
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="../img/temp.png" alt="Fish Fighters Screenshot">
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="../img/temp.png" alt="Fish Fighters Screenshot">
+                    </div>
+
+                </div>
+
+                <!-- Arrows for slide 1 -->
+                <label for="slide3" class="carousel-arrow left-arrow left1">&#10094;</label>
+                <label for="slide2" class="carousel-arrow right-arrow right1">&#10095;</label>
+
+                <!-- Arrows for slide 2 -->
+                <label for="slide1" class="carousel-arrow left-arrow left2">&#10094;</label>
+                <label for="slide3" class="carousel-arrow right-arrow right2">&#10095;</label>
+
+                <!-- Arrows for slide 3 -->
+                <label for="slide2" class="carousel-arrow left-arrow left3">&#10094;</label>
+                <label for="slide1" class="carousel-arrow right-arrow right3">&#10095;</label>
+
             </div>
+
 
             <div class="project-info-layout">
 

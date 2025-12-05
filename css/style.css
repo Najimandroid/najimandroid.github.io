@@ -74,6 +74,13 @@ main {
         font-size: 1.05rem;
     }
 
+.project-info-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 50px;
+    margin-top: 40px;
+}
+
 /* DIVIDERS */
 .section-divider {
     margin: 80px auto;
@@ -116,4 +123,88 @@ code {
     padding: 2px 4px;
     border-radius: 4px;
     font-family: Consolas, "Courier New", monospace;
+}
+
+/*****************************************/
+/*               CAROUSEL                */
+/*****************************************/
+
+.carousel-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    position: relative;
+}
+
+    .carousel-container input {
+        display: none;
+    }
+
+/* Slide container (3 images wide) */
+.carousel-slides {
+    display: flex;
+    width: 300%;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Each individual slide */
+.carousel-slide img {
+    width: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+/* Slide switching logic */
+#slide1:checked ~ .carousel-slides {
+    transform: translateX(0);
+}
+
+#slide2:checked ~ .carousel-slides {
+    transform: translateX(-33.33%);
+}
+
+#slide3:checked ~ .carousel-slides {
+    transform: translateX(-66.66%);
+}
+
+/* Arrows */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    user-select: none;
+    transition: 0.2s ease-in-out;
+    display: none;
+}
+
+    .carousel-arrow:hover {
+        color: #bbbbbb;
+    }
+
+.left-arrow {
+    left: -40px;
+}
+
+.right-arrow {
+    right: -40px;
+}
+
+/* Activate arrows for current slide */
+#slide1:checked ~ .left1,
+#slide1:checked ~ .right1 {
+    display: block;
+}
+
+#slide2:checked ~ .left2,
+#slide2:checked ~ .right2 {
+    display: block;
+}
+
+#slide3:checked ~ .left3,
+#slide3:checked ~ .right3 {
+    display: block;
 }
