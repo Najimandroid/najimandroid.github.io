@@ -9,18 +9,27 @@ body {
     line-height: 1.7;
 }
 
-    /* Dark edges overlay */
-    body::before {
+    /* DARK SIDE BANDS (left and right) */
+    body::before,
+    body::after {
         content: "";
         position: fixed;
         top: 0;
-        left: 0;
-        width: 100%;
+        width: 150px; /* Change thickness here */
         height: 100%;
+        background-color: rgba(0, 0, 0, 0.65); /* Darkness level */
         pointer-events: none;
-        /* Dark gradient on the edges */
-        background: linear-gradient( to right, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.0) 25%, rgba(0, 0, 0, 0.0) 75%, rgba(0, 0, 0, 0.55) );
-        z-index: 1;
+        z-index: 0; /* Stays behind the header/footer/buttons */
+    }
+
+    /* Left band */
+    body::before {
+        left: 0;
+    }
+
+    /* Right band */
+    body::after {
+        right: 0;
     }
 
 /* NAVBAR */
