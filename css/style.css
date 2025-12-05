@@ -9,32 +9,39 @@ body {
     line-height: 1.7;
 }
 
-    /* DARK SIDE BANDS (left and right) */
-    body::before,
-    body::after {
-        content: "";
-        position: fixed;
-        top: 0;
-        width: 25vw; /* Change thickness here */
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.1); /* Darkness level */
-        pointer-events: none;
-        z-index: 0; /* Stays behind the header/footer/buttons */
-    }
+/* Width of the center content you want to keep */
+:root {
+    --content-width: 1000px; /* Adjust if needed */
+}
 
-    /* Left band */
-    body::before {
-        left: 0;
-    }
+/* DARK SIDE BANDS */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.20); /* Darkness level */
+    pointer-events: none;
+    z-index: 0; /* Behind everything else */
+}
 
-    /* Right band */
-    body::after {
-        right: 0;
-    }
+/* Left band */
+body::before {
+    left: 0;
+    width: calc((100vw - var(--content-width)) / 2);
+}
 
-header, footer {
+/* Right band */
+body::after {
+    right: 0;
+    width: calc((100vw - var(--content-width)) / 2);
+}
+
+/* Make sure navigation, footer, and everything important stays on top */
+header, footer, nav {
     position: relative;
-    z-index: 2; /* Higher than body::before/after */
+    z-index: 2;
 }
 
 /* NAVBAR */
@@ -46,7 +53,6 @@ nav {
     padding: 25px 0;
     background-color: #151515;
     border-bottom: 1px solid #333333;
-    z-index: 2;
 }
 
     nav a {
