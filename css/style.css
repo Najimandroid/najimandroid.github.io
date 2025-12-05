@@ -131,9 +131,10 @@ code {
 
 .carousel-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 40px auto;
     position: relative;
+    overflow: hidden; /* This hides the non-selected images */
 }
 
     .carousel-container input {
