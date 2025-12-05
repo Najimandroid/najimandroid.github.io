@@ -1,4 +1,4 @@
-/* GLOBAL LAYOUT */
+﻿/* GLOBAL LAYOUT */
 body {
     margin: 0;
     padding: 0;
@@ -246,51 +246,55 @@ code {
     display: block;
 }
 
-/* TECHNICAL SECTION */
+/* ========================= */
+/*   TECHNICAL DROP SECTIONS */
+/* ========================= */
+
 .technical-section {
-    margin-top: 80px;
-    padding: 0 40px;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 25px 0;
+    border-bottom: 1px solid #2e2e2e; /* Fine separator */
+    padding-bottom: 10px;
 }
 
-    .technical-section h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-    }
-
-    /* Details dropdown styling */
-    .technical-section details {
-        background-color: #171717;
-        border: 1px solid #2a2a2a;
-        border-radius: 6px;
-        margin-bottom: 12px;
-        padding: 14px 18px;
-        transition: background-color 0.2s ease;
-    }
-
-        .technical-section details[open] {
-            background-color: #1e1e1e;
-        }
-
     .technical-section summary {
+        display: flex;
+        align-items: center;
         cursor: pointer;
-        font-weight: bold;
-        font-size: 1.1rem;
+        padding: 10px 0;
         list-style: none;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #ffffff;
     }
 
+        /* Remove default marker */
         .technical-section summary::-webkit-details-marker {
             display: none;
         }
 
-    /* Content inside dropdown */
-    .technical-section p {
-        margin-top: 12px;
-        line-height: 1.6;
-        color: #cccccc;
+        /* Custom arrow */
+        .technical-section summary::before {
+            content: "▶"; /* Simple triangle */
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 0.9rem;
+            transition: transform 0.25s ease;
+            color: #bbbbbb;
+        }
+
+    /* Rotate arrow when open */
+    .technical-section[open] summary::before {
+        transform: rotate(90deg);
     }
+
+/* The dropdown content */
+.technical-content {
+    margin-left: 25px;
+    margin-top: 8px;
+    color: #dddddd;
+    line-height: 1.6;
+    font-size: 1rem;
+}
 
 
 /*

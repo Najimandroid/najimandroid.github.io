@@ -165,80 +165,98 @@
         <!-- ========================= -->
         <!--      TECHNICAL SECTION    -->
         <!-- ========================= -->
-        <section class="technical-section">
+        <section>
 
             <h2>Technical Breakdown</h2>
 
-            <details>
+            <details class="technical-section">
                 <summary>Development Philosophy & Code Architecture</summary>
-                <p>
-                    When I started Fish Fighters, my goal wasn’t simply to make a game — it was to build a
-                    maintainable codebase with clear ownership, modular systems, and predictable behavior.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        When I started Fish Fighters, my goal wasn’t simply to make a game — it was to
+                        build a maintainable codebase with clear ownership, modular systems, and predictable behavior.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>Modern C++ Codebase</summary>
-                <p>
-                    The entire project uses modern C++20 features like smart pointers, RAII, lambdas, and
-                    const correctness to keep the architecture clean and safe.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        The entire project uses modern C++20 features like smart pointers, RAII, lambdas,
+                        and const correctness to keep the architecture clean and safe.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>State Machine for Battle Entities</summary>
-                <p>
-                    Every gameplay entity uses a lightweight state machine to manage attacking, moving,
-                    taking damage and dying, preventing branching explosions.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        Every gameplay entity uses a lightweight state machine to manage attacking, moving,
+                        taking damage and dying, preventing branching explosions.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>Animation System</summary>
-                <p>
-                    Animations rely on scrolling texture rectangles inside a sprite atlas, driven by a small
-                    animation controller tied to entity states.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        Animations rely on scrolling texture rectangles inside a sprite atlas, driven by a small
+                        animation controller tied to entity states.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>UI System</summary>
-                <p>
-                    A simple UIManager creates buttons, panels and prompts on the fly, reducing scene clutter
-                    and keeping UI fully decoupled from gameplay.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        A simple UIManager creates buttons, panels and prompts on the fly, reducing scene clutter
+                        and keeping UI fully decoupled from gameplay.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>Data-Driven Architecture</summary>
-                <p>
-                    All gameplay values — enemies, levels, timings, attacks — live in JSON files parsed by a
-                    dedicated DataLoader, making everything tunable without recompiling.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        All gameplay values — enemies, levels, timings, attacks — live in JSON files parsed
+                        by a dedicated DataLoader, making everything tunable without recompiling.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>Level & Enemy Waves</summary>
-                <p>
-                    Levels are defined in structured JSON and interpreted by a LevelManager that controls
-                    pacing, spawning and wave logic.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        Levels are defined in structured JSON and interpreted by a LevelManager that controls
+                        pacing, spawning and wave logic.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>Debug Tools</summary>
-                <p>
-                    ImGui allows inspecting entity properties, adjusting stats, spawning enemies and
-                    visualizing hitboxes while the game is running.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        ImGui allows inspecting entity properties, adjusting stats, spawning enemies and visualizing
+                        hitboxes while the game is running.
+                    </p>
+                </div>
             </details>
 
-            <details>
+            <details class="technical-section">
                 <summary>What I Learned</summary>
-                <p>
-                    This project has been a major step in learning how to structure real-world systems
-                    instead of writing ad-hoc gameplay code.
-                </p>
+                <div class="technical-content">
+                    <p>
+                        This project has been a major step in learning how to structure real-world systems instead of
+                        writing ad-hoc gameplay code.
+                    </p>
+                </div>
             </details>
 
         </section>
