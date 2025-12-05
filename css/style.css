@@ -134,26 +134,33 @@ code {
     max-width: 900px;
     margin: 40px auto;
     position: relative;
-    overflow: hidden; /* This hides the non-selected images */
+    overflow: hidden; /* hides non-selected images */
 }
 
+    /* Hide radio buttons */
     .carousel-container input {
         display: none;
     }
 
-/* Slide container (3 images wide) */
+/* Slide container (3 slides = 300%) */
 .carousel-slides {
-    display: flex;
+    display: flex; /* REQUIRED to align slides horizontally */
     width: 300%;
     transition: transform 0.5s ease-in-out;
 }
 
 /* Each individual slide */
-.carousel-slide img {
+.carousel-slide {
     width: 100%;
-    display: block;
-    object-fit: contain;
+    flex-shrink: 0; /* prevents resizing */
 }
+
+    .carousel-slide img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+    }
 
 /* Slide switching logic */
 #slide1:checked ~ .carousel-slides {
@@ -161,11 +168,11 @@ code {
 }
 
 #slide2:checked ~ .carousel-slides {
-    transform: translateX(-33.33%);
+    transform: translateX(-100%);
 }
 
 #slide3:checked ~ .carousel-slides {
-    transform: translateX(-66.66%);
+    transform: translateX(-200%);
 }
 
 /* Arrows */
@@ -179,7 +186,7 @@ code {
     padding: 10px;
     user-select: none;
     transition: 0.2s ease-in-out;
-    display: none;
+    display: block; /* Your arrows were hidden before */
 }
 
     .carousel-arrow:hover {
@@ -187,11 +194,11 @@ code {
     }
 
 .left-arrow {
-    left: -40px;
+    left: 10px;
 }
 
 .right-arrow {
-    right: -40px;
+    right: 10px;
 }
 
 /* Activate arrows for current slide */
