@@ -246,54 +246,51 @@ code {
     display: block;
 }
 
-/* ========================= */
-/*   TECHNICAL DROP SECTIONS */
-/* ========================= */
+/* ================================ */
+/*    TECHNICAL SECTION STYLE       */
+/* ================================ */
 
 .technical-section {
-    margin: 25px 0;
-    border-bottom: 1px solid #2e2e2e; /* Fine separator */
+    margin: 20px 0;
     padding-bottom: 10px;
+    border-bottom: 1px solid #333; /* Simple line separator */
 }
 
     .technical-section summary {
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding: 8px 0;
         display: flex;
         align-items: center;
-        cursor: pointer;
-        padding: 10px 0;
-        list-style: none;
-        font-size: 1.2rem;
-        font-weight: 500;
+        justify-content: space-between;
         color: #ffffff;
     }
 
-        /* Remove default marker */
-        .technical-section summary::-webkit-details-marker {
-            display: none;
-        }
-
-        /* Custom arrow */
-        .technical-section summary::before {
-            content: "▶"; /* Simple triangle */
-            display: inline-block;
-            margin-right: 10px;
-            font-size: 0.9rem;
-            transition: transform 0.25s ease;
-            color: #bbbbbb;
+        /* The arrow */
+        .technical-section summary::after {
+            content: "▸"; /* Clean little triangle */
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+            opacity: 0.8;
         }
 
     /* Rotate arrow when open */
-    .technical-section[open] summary::before {
+    .technical-section[open] summary::after {
         transform: rotate(90deg);
     }
 
-/* The dropdown content */
+/* Content spacing */
 .technical-content {
-    margin-left: 25px;
-    margin-top: 8px;
-    color: #dddddd;
+    margin-top: 10px;
+    padding-left: 5px;
+    color: #cccccc;
     line-height: 1.6;
-    font-size: 1rem;
+}
+
+/* Remove ugly default marker */
+.technical-section summary::-webkit-details-marker {
+    display: none;
 }
 
 
