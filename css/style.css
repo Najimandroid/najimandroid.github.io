@@ -15,9 +15,9 @@ body {
         content: "";
         position: fixed;
         top: 0;
-        width: 450px; /* Change thickness here */
+        width: 25vw; /* Change thickness here */
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.2); /* Darkness level */
+        background-color: rgba(0, 0, 0, 0.1); /* Darkness level */
         pointer-events: none;
         z-index: 0; /* Stays behind the header/footer/buttons */
     }
@@ -32,7 +32,7 @@ body {
         right: 0;
     }
 
-head, footer {
+header, footer {
     position: relative;
     z-index: 2; /* Higher than body::before/after */
 }
@@ -46,6 +46,7 @@ nav {
     padding: 25px 0;
     background-color: #151515;
     border-bottom: 1px solid #333333;
+    z-index: 2;
 }
 
     nav a {
