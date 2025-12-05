@@ -187,11 +187,11 @@ code {
     }
 
 .left-arrow {
-    left: -40px;
+    left: 10px;
 }
 
 .right-arrow {
-    right: -40px;
+    right: 10px;
 }
 
 /* Activate arrows for current slide */
