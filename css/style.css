@@ -246,6 +246,53 @@ code {
     display: block;
 }
 
+/* TECHNICAL SECTION */
+.technical-section {
+    margin-top: 80px;
+    padding: 0 40px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+    .technical-section h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    /* Details dropdown styling */
+    .technical-section details {
+        background-color: #171717;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        padding: 14px 18px;
+        transition: background-color 0.2s ease;
+    }
+
+        .technical-section details[open] {
+            background-color: #1e1e1e;
+        }
+
+    .technical-section summary {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.1rem;
+        list-style: none;
+    }
+
+        .technical-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+    /* Content inside dropdown */
+    .technical-section p {
+        margin-top: 12px;
+        line-height: 1.6;
+        color: #cccccc;
+    }
+
+
 /*
 .carousel-slide {
     opacity: 0;

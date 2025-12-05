@@ -163,60 +163,83 @@
 
 
         <!-- ========================= -->
-        <!--      DETAILED SECTION     -->
+        <!--      TECHNICAL SECTION    -->
         <!-- ========================= -->
-        <section class="project-details">
+        <section class="technical-section">
 
-            <h2>Detailed Info</h2>
+            <h2>Technical Breakdown</h2>
 
-            <!-- ===== Technical Sections ===== -->
+            <details>
+                <summary>Development Philosophy & Code Architecture</summary>
+                <p>
+                    When I started Fish Fighters, my goal wasn’t simply to make a game — it was to build a
+                    maintainable codebase with clear ownership, modular systems, and predictable behavior.
+                </p>
+            </details>
 
-            <h3>Development Philosophy & Technical Approach</h3>
-            <p>
-                When I started Fish Fighters, my goal wasn’t simply to make a game — it was to learn how to
-                structure a real codebase. I wanted something clean, modular, and maintainable.
-            </p>
+            <details>
+                <summary>Modern C++ Codebase</summary>
+                <p>
+                    The entire project uses modern C++20 features like smart pointers, RAII, lambdas, and
+                    const correctness to keep the architecture clean and safe.
+                </p>
+            </details>
 
-            <h3>A Modern C++ Codebase</h3>
-            <p>
-                The game is written in modern C++20 with careful use of smart pointers, RAII, and const correctness.
-            </p>
+            <details>
+                <summary>State Machine for Battle Entities</summary>
+                <p>
+                    Every gameplay entity uses a lightweight state machine to manage attacking, moving,
+                    taking damage and dying, preventing branching explosions.
+                </p>
+            </details>
 
-            <h3>State Machine for Battle Entities</h3>
-            <p>
-                One of the first problems I encountered while building the gameplay was the growing complexity
-                of my entity behaviors...
-            </p>
+            <details>
+                <summary>Animation System</summary>
+                <p>
+                    Animations rely on scrolling texture rectangles inside a sprite atlas, driven by a small
+                    animation controller tied to entity states.
+                </p>
+            </details>
 
-            <h3>Animation System</h3>
-            <p>
-                Animations rely on texture rectangles to scroll through frames inside a sprite atlas.
-            </p>
+            <details>
+                <summary>UI System</summary>
+                <p>
+                    A simple UIManager creates buttons, panels and prompts on the fly, reducing scene clutter
+                    and keeping UI fully decoupled from gameplay.
+                </p>
+            </details>
 
-            <h3>UI System</h3>
-            <p>
-                A simple UI framework powered by a UIManager for generating interactive elements quickly.
-            </p>
+            <details>
+                <summary>Data-Driven Architecture</summary>
+                <p>
+                    All gameplay values — enemies, levels, timings, attacks — live in JSON files parsed by a
+                    dedicated DataLoader, making everything tunable without recompiling.
+                </p>
+            </details>
 
-            <h3>Data-Driven Architecture</h3>
-            <p>
-                All gameplay data lives in JSON files parsed by a dedicated DataLoader.
-            </p>
+            <details>
+                <summary>Level & Enemy Waves</summary>
+                <p>
+                    Levels are defined in structured JSON and interpreted by a LevelManager that controls
+                    pacing, spawning and wave logic.
+                </p>
+            </details>
 
-            <h3>Level System</h3>
-            <p>
-                Levels, pacing and waves are driven by structured JSON.
-            </p>
+            <details>
+                <summary>Debug Tools</summary>
+                <p>
+                    ImGui allows inspecting entity properties, adjusting stats, spawning enemies and
+                    visualizing hitboxes while the game is running.
+                </p>
+            </details>
 
-            <h3>Debug Tools</h3>
-            <p>
-                ImGui provides an in-game overlay that lets me iterate rapidly on gameplay.
-            </p>
-
-            <h3>What I Learned</h3>
-            <p>
-                This project represents a major step in my evolution as a programmer.
-            </p>
+            <details>
+                <summary>What I Learned</summary>
+                <p>
+                    This project has been a major step in learning how to structure real-world systems
+                    instead of writing ad-hoc gameplay code.
+                </p>
+            </details>
 
         </section>
 
