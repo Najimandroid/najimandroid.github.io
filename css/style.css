@@ -210,6 +210,7 @@ code {
     display: block;
 }
 
+/*
 .carousel-slide {
     opacity: 0;
     transition: opacity 0.6s ease-in-out;
@@ -219,4 +220,4 @@ code {
 #slide2:checked ~ .carousel-slides .slide2,
 #slide3:checked ~ .carousel-slides .slide3 {
     opacity: 1;
-}
+}*/
