@@ -15,9 +15,9 @@ body {
         content: "";
         position: fixed;
         top: 0;
-        width: 150px; /* Change thickness here */
+        width: 450px; /* Change thickness here */
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.65); /* Darkness level */
+        background-color: rgba(0, 0, 0, 0.2); /* Darkness level */
         pointer-events: none;
         z-index: 0; /* Stays behind the header/footer/buttons */
     }
@@ -31,6 +31,11 @@ body {
     body::after {
         right: 0;
     }
+
+header, footer {
+    position: relative;
+    z-index: 2; /* Higher than body::before/after */
+}
 
 /* NAVBAR */
 nav {
