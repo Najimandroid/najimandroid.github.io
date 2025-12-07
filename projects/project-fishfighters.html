@@ -170,7 +170,7 @@
             <h2>Technical Breakdown</h2>
 
             <details class="technical-section">
-                <summary>Development Philosophy & Code Architecture</summary>
+                <summary>Project Architecture</summary>
                 <div class="technical-content">
                     <p>
                         When I started Fish Fighters, my goal wasn’t simply to make a game — it was to
@@ -179,65 +179,508 @@
                 </div>
             </details>
 
-            <details class="technical-section">
-                <summary>Modern C++ Codebase</summary>
+            <details class="technical-section" open>
+                <summary>Game Entities</summary>
                 <div class="technical-content">
+
+                    <h4>Concept: Templates vs. Runtime Instances</h4>
                     <p>
-                        The entire project uses modern C++20 features like smart pointers, RAII, lambdas,
-                        and const correctness to keep the architecture clean and safe.
+                        In Fish Fighters each unit exists in two distinct forms:
+                        a <strong>data template</strong> and a <strong>runtime instance</strong>.
+                        The template is represented by the <code>EntityData</code> struct (serializable to JSON)
+                        and contains only raw values (cost, health, attackPower, texture path, etc.).
+                        The runtime actor is a <code>BattleEntity</code> (concrete types: <code>BattleUnit</code>, <code>BattleEnemy</code>)
+                        which owns state, animations, hitboxes and a <code>StateMachine</code>.
                     </p>
+
+                    <h4>Why this separation?</h4>
+                    <p>
+                        Separating data from behavior gives several practical benefits:
+                        it makes the game <em>data-driven</em> (UI and tools can read templates directly),
+                        prevents accidental mutation of template values during gameplay,
+                        and keeps the runtime objects focused on behaviour, not storage.
+                        This approach mirrors patterns used in production engines (ScriptableObjects / data assets).
+                    </p>
+
+                    <h4>Instantiation (how entities are spawned)</h4>
+                    <p>
+                        Entities are created by the <code>Stage</code> using an <code>EntityData</code> pointer returned by the <code>DataLoader</code>.
+                        The runtime instance holds a shared pointer to its template:
+                        <code>std::shared_ptr<EntityData> data</code>, and copies/derives runtime fields (currentHealth, cooldown, etc.)
+                        from that template upon construction.
+                    </p>
+
+                    <p><strong>Example (simplified):</strong></p>
+                    <pre><code>// create a BattleEnemy from template data
+auto data = m_dataLoader->get_enemy_data(uid);
+auto enemy = std::make_shared<BattleEnemy>(data, magnification);
+enemy->set_current_stage(shared_from_this());
+enemy->init_state_machine();
+enemy->stateMachine->change_state(std::make_unique<IdleState>(enemy->stateMachine));
+m_enemies[enemy->currentLayer].push_back(enemy);
+</code></pre>
+
+                    <h4>Runtime modifiers and magnification</h4>
+                    <p>
+                        Templates stay immutable while a <code>BattleEntity</code> computes its runtime stats at spawn.
+                        For example, player progression or level multipliers are applied through a <code>magnification</code> vector:
+                        <code>sf::Vector2f magnification</code> where <code>.x</code> affects HP and <code>.y</code> affects attack.
+                        This makes it trivial to support buffs, upgrades or difficulty scaling without altering templates.
+                    </p>
+
+                    <h4>Hitboxes, visuals and derived values</h4>
+                    <p>
+                        Several runtime values are derived from template fields: hitbox size is calculated from the entity texture
+                        (larger textures → larger hitboxes), attack & damage zones are computed from <code>damageZone</code> offsets,
+                        and animation frame timing is driven by template frame counts + a per-instance timer.
+                        Keeping these derived calculations in the instance keeps the template clean and the logic explicit.
+                    </p>
+
+                    <h4>Entities and the rest of the system</h4>
+                    <p>
+                        Because the template is accessible project-wide, UI screens (shop, unit info) read <code>EntityData</code>
+                        directly to show cost, description and iconography. Meanwhile the gameplay loop working in <code>Stage::update()</code>
+                        operates on collections of <code>BattleEntity</code> instances for targeting, collision and wave flow.
+                    </p>
+
+                    <h4>Benefits observed</h4>
+                    <ul>
+                        <li>Easy tuning: add or tweak units by editing JSON — no recompilation required.</li>
+                        <li>Cleaner code: runtime state and data are not mixed, which reduced bugs during refactors.</li>
+                        <li>Reusability: same template used by UI, spawn logic and analytics tools.</li>
+                    </ul>
+
                 </div>
             </details>
 
+
+            <section class="technical-section">
+                <details>
+                    <summary>Entities’ State Machine</summary>
+                    <div>
+                        <p>
+                            Each <code>BattleEntity</code> in the game is driven by a dedicated
+                            <code>StateMachine</code> responsible for handling behaviour such as idling,
+                            walking, attacking, or being knocked back. Instead of relying on a large
+                            <code>switch</code> statement or a shared enum, each behaviour is encapsulated
+                            inside its own class derived from <code>BaseState</code>. This keeps logic
+                            isolated and makes transitions explicit and maintainable.
+                        </p>
+
+                        <h4>Architecture</h4>
+                        <p>
+                            The <code>StateMachine</code> owns a single active state through a
+                            <code>std::unique_ptr&lt;BaseState&gt;</code>. States are lightweight objects
+                            that hold a reference back to the machine, allowing them to request transitions
+                            when needed. A state follows a clear lifecycle:
+                        </p>
+
+                        <p>
+                            • <code>enter()</code> is called exactly once when the state becomes active.
+                            • <code>perform()</code> runs every frame and contains the state’s logic.
+                            • <code>exit()</code> is called exactly once before the state is replaced.
+                        </p>
+
+                        <p>
+                            Transitioning from one state to another happens through
+                            <code>change_state()</code>, which automatically calls <code>exit()</code> on
+                            the old state and <code>enter()</code> on the new one. Because the machine holds
+                            the state via <code>unique_ptr</code>, ownership and lifetime are always clear.
+                        </p>
+
+                        <h4>Example: AttackState</h4>
+                        <p>
+                            The <code>AttackState</code> handles everything related to an attack cycle. It
+                            manages foreswing timing, applies damage at the right moment, checks for valid
+                            targets, and determines the next state once the attack is finished. It can
+                            transition to different states depending on the context:
+                        </p>
+
+                        <p>
+                            • No target in range → switch to <code>WalkState</code>
+                            • Attack executed → return to <code>IdleState</code>
+                            • Entity is knocked back → switch to <code>KnockbackState</code>
+                        </p>
+
+                        <p>
+                            Because the attack behaviour is isolated inside its own class, the entity’s
+                            main update function stays clean. The <code>BattleEntity</code> simply calls
+                            <code>stateMachine->update_state(deltaTime)</code> each frame.
+                        </p>
+
+                        <h4>Why this design works</h4>
+                        <p>
+                            Before this system, entity behaviour was handled through a large
+                            <code>switch</code> statement inside <code>BattleEntity</code>. As more
+                            behaviours were added, the code became hard to read, harder to extend, and easy
+                            to break. By moving each behaviour into its own class, the logic became modular
+                            and easier to reason about. States can now evolve independently without creating
+                            chain reactions of side effects.
+                        </p>
+
+                        <p>
+                            This design also makes debugging significantly simpler: the active state is
+                            always known, transitions are explicit, and each behaviour is contained in a
+                            well-defined place in the codebase. Adding new behaviour, like a stun state or a
+                            charge attack, only requires adding a new class and defining its transitions.
+                        </p>
+                    </div>
+                </details>
+            </section>
+
+
             <details class="technical-section">
-                <summary>State Machine for Battle Entities</summary>
+                <summary>Stages, Waves & Rewards</summary>
                 <div class="technical-content">
+
+                    <h4>Role of <code>StageData</code></h4>
                     <p>
-                        Every gameplay entity uses a lightweight state machine to manage attacking, moving,
-                        taking damage and dying, preventing branching explosions.
+                        <code>StageData</code> is the level blueprint: it describes a stage’s rules (limits, base health, length),
+                        visuals (backgrounds, base textures), which enemy waves will appear, and what rewards the player receives
+                        on completion. At runtime the <code>Stage</code> is initialized from a <code>StageData</code> instance so
+                        the gameplay code can remain generic and driven by data only.
                     </p>
+
+                    <h4>How waves are declared: <code>EnemyStageData</code></h4>
+                    <p>
+                        Each entry in <code>StageData::enemies</code> is a <code>std::shared_ptr&lt;EnemyStageData&gt;</code> that
+                        acts as an individual wave controller. It contains:
+                    </p>
+                    <ul>
+                        <li><code>UID</code> — which template (EntityData) to spawn.</li>
+                        <li><code>spawnStart</code>, <code>respawnTime</code>, <code>amount</code> — timing and count.</li>
+                        <li><code>baseHealthThreshold</code> — conditional spawning based on base HP%.</li>
+                        <li><code>magnification</code> — HP / attack scaling per wave.</li>
+                        <li>flags like <code>isBoss</code> or <code>bypassEnemyLimit</code>.</li>
+                    </ul>
+                    <p>
+                        During the <code>Stage::update()</code> loop the Stage iterates all <code>EnemyStageData</code> objects,
+                        advances their internal timer, checks start / threshold / amount conditions, and calls
+                        <code>spawn_enemy(...)</code> when appropriate. Because each wave keeps its own runtime fields
+                        (<code>currentTimer</code>, <code>spawnedCount</code>, <code>hasStarted</code>), multiple waves can
+                        run concurrently and express complex pacing patterns without additional code complexity.
+                    </p>
+
+                    <h4>Rewards: <code>RewardData</code></h4>
+                    <p>
+                        A <code>StageData</code> includes a list of <code>RewardData</code> describing what the player receives
+                        when the stage is completed (e.g. "shells" currency, or unlocking a unit by <code>unitUID</code>).
+                        The Stage hands these items to player data / progression systems when victory is detected.
+                    </p>
+
+                    <h4>Data-driven example (JSON snippet)</h4>
+                    <p>Example of how a small part of a stage might be represented in JSON:</p>
+                    <pre><code>{
+  "uid": 12,
+  "name": "Sandy Shoals",
+  "enemiesLimit": 8,
+  "length": 1200,
+  "enemies": [
+    {
+      "uid": 101,
+      "amount": 10,
+      "spawnStart": 5.0,
+      "respawnTime": 3.0,
+      "magnification": [1.0, 1.0],
+      "baseHealthThreshold": 100
+    },
+    {
+      "uid": 201,
+      "amount": -1,
+      "spawnStart": 30.0,
+      "respawnTime": 6.0,
+      "isBoss": false,
+      "bypassEnemyLimit": false
+    }
+  ],
+  "rewards": [
+    { "type": "shells", "amount": 200 },
+    { "type": "unit", "unitUID": 12 }
+  ]
+}</code></pre>
+
+                    <h4>Why this approach works</h4>
+                    <p>
+                        Putting waves and stage rules in data keeps level design outside the codebase: designers can tweak pacing,
+                        toggle conditional spawns, or add boss beats by editing JSON rather than recompiling. The Stage itself
+                        remains a deterministic runtime orchestrator: it evaluates data-driven conditions, updates per-wave timers,
+                        and calls spawning APIs. This separation enables fast iteration and clear ownership between systems.
+                    </p>
+
+                    <h4>Integration with the rest of the system</h4>
+                    <p>
+                        The data flow at start-of-stage looks like:
+                    </p>
+                    <ol>
+                        <li><code>DataLoader</code> reads <code>StageData</code> (and nested <code>EnemyStageData</code>) from JSON.</li>
+                        <li><code>Stage::load()</code> initializes background, bases and populates the <code>m_enemyStageDatas</code> array.</li>
+                        <li>
+                            During gameplay, the Stage updates these <code>EnemyStageData</code> objects and spawns <code>BattleEnemy</code>
+                            instances using the templates returned by the <code>DataLoader</code>.
+                        </li>
+                        <li>On stage completion the Stage grants <code>RewardData</code> items to the player progression system.</li>
+                    </ol>
+
+                    <h4>Practical benefits & tradeoffs</h4>
+                    <p>
+                        <strong>Benefits:</strong> fast level iteration, expressive control over timing and conditional spawns,
+                        and ability to create overlapping / infinite waves. Because waves are self-contained, adding or removing
+                        behaviour is low risk.
+                    </p>
+                    <p>
+                        <strong>Tradeoffs / future iterations:</strong> the current approach embeds spawn logic as data, but for very complex
+                        encounters a lightweight event script (or small DSL) could offer even more expressiveness. Also, adding schema
+                        validation on load (JSON schema or hand-rolled checks) would improve resilience and surface designer errors early.
+                    </p>
+
+                    <h4>Suggestions for scale</h4>
+                    <ul>
+                        <li>Introduce an <code>EntityFactory</code> so all instantiation and dependency wiring is centralized.</li>
+                        <li>Add JSON schema validation for <code>StageData</code> and <code>EnemyStageData</code> to catch misconfigured levels.</li>
+                        <li>Consider a simple event system for waves (onStart, onSpawn, onFinish) to reduce special-case flags in data.</li>
+                    </ul>
+
                 </div>
             </details>
 
-            <details class="technical-section">
-                <summary>Animation System</summary>
-                <div class="technical-content">
-                    <p>
-                        Animations rely on scrolling texture rectangles inside a sprite atlas, driven by a small
-                        animation controller tied to entity states.
-                    </p>
-                </div>
-            </details>
 
-            <details class="technical-section">
-                <summary>UI System</summary>
-                <div class="technical-content">
-                    <p>
-                        A simple UIManager creates buttons, panels and prompts on the fly, reducing scene clutter
-                        and keeping UI fully decoupled from gameplay.
-                    </p>
-                </div>
-            </details>
+            <section id="game-data-files">
+                <h2>Game & Player Data</h2>
 
-            <details class="technical-section">
-                <summary>Data-Driven Architecture</summary>
-                <div class="technical-content">
-                    <p>
-                        All gameplay values — enemies, levels, timings, attacks — live in JSON files parsed
-                        by a dedicated DataLoader, making everything tunable without recompiling.
-                    </p>
-                </div>
-            </details>
+                <p>
+                    The game relies heavily on external data files to describe nearly all its static and persistent content:
+                    units, enemies, stages, chapters, and the player's progression. Instead of hardcoding these values inside
+                    the engine, I chose to build a fully data-driven system based on JSON files and a dedicated <code>DataLoader</code>.
+                    This approach keeps the game flexible, easier to balance, and quicker to iterate on.
+                </p>
 
-            <details class="technical-section">
-                <summary>Level & Enemy Waves</summary>
-                <div class="technical-content">
-                    <p>
-                        Levels are defined in structured JSON and interpreted by a LevelManager that controls
-                        pacing, spawning and wave logic.
-                    </p>
-                </div>
-            </details>
+                <h3>Why JSON?</h3>
+
+                <p>
+                    JSON was chosen for three main reasons. First, it remains extremely readable, which is essential when tuning
+                    entities, stages, or progression. Second, it supports nested objects and arrays natively, which map well to
+                    my in-game structures such as <code>EntityData</code> or <code>StageData</code>. Third, the
+                    <code>nlohmann::json</code> library provides a simple, expressive API that avoids writing any custom parsing code.
+                </p>
+
+                <p>
+                    Choosing JSON over a custom format was an intentional architectural decision: it reduces maintenance cost,
+                    prevents format bugs, and allows me to focus on gameplay logic rather than tools engineering.
+                </p>
+
+                <h3>DataLoader: A Centralized Loading System</h3>
+
+                <p>
+                    All game data is loaded through the <code>DataLoader</code> at startup. It is responsible for reading JSON files,
+                    converting them into strongly-typed C++ structures, and storing them in internal databases.
+                    Its interface stays clean and minimal: <code>load_all()</code> called once at startup,
+                    <code>terminate()</code> called when the game exits.
+                </p>
+
+                <pre><code>
+bool DataLoader::load_all()
+{
+    return load_units("game_data/units.json") &&
+           load_enemies("game_data/enemies.json") &&
+           load_stages("game_data/stages.json") &&
+           load_chapters("game_data/chapters.json") &&
+           load_player("game_data/player.json");
+}
+    </code></pre>
+
+                <p>
+                    Each loading function maps one JSON file to an internal database (units, enemies, stages, chapters),
+                    stored using <code>std::shared_ptr</code> to ensure safe sharing between systems. The design keeps the loader
+                    purely functional: it never performs gameplay logic, only deserialization.
+                </p>
+
+                <h3>Units & Enemies Database</h3>
+
+                <p>
+                    Units and enemies share the same underlying structure: <code>EntityData</code>. JSON files define all the values
+                    necessary to build an entity: stats, attack timings, movement speed, textures, and animation metadata.
+                </p>
+
+                <p>
+                    During loading, the DataLoader reads each entry and constructs an <code>EntityData</code> instance. For player
+                    units, the system supports multiple forms and levels, so the JSON file exposes these variants as nested objects.
+                    Those forms are flattened and stored into <code>m_unitsFormsDatabase</code> using a composite key
+                    <code>(UID, form)</code>.
+                </p>
+
+                <pre><code>
+m_unitsFormsDatabase[{UID, formID}] = data;
+    </code></pre>
+
+                <p>
+                    This ensures that retrieving the correct form is always deterministic and requires no lookup logic elsewhere.
+                </p>
+
+                <h3>Stages, Waves, and Rewards</h3>
+
+                <p>
+                    All level content is stored inside <code>StageData</code> entries. The JSON format defines spawn limits, the
+                    battlefield length, enemy waves, textures, and completion rewards. Each wave is represented by an
+                    <code>EnemyStageData</code> structure describing spawning behavior, timers, magnification values, and
+                    conditional triggers such as base-health thresholds.
+                </p>
+
+                <p>
+                    Stages also define rewards such as currency or unit unlocks. These are represented as <code>RewardData</code>,
+                    making progression tuning entirely data-driven.
+                </p>
+
+                <h3>Chapters: World Structure</h3>
+
+                <p>
+                    Chapters group stages together and define their positions on the world map. The JSON file stores a simple list
+                    of stage entries with coordinates. This allows the world UI to update dynamically as soon as the data is loaded.
+                </p>
+
+                <h3>PlayerData: Persistent Progression</h3>
+
+                <p>
+                    The player's progression is stored in <code>player.json</code>. It contains currency, owned units, equipped
+                    units, and completed stages. The DataLoader converts this JSON file into a <code>PlayerData</code> structure,
+                    held as a <code>std::shared_ptr</code> so the entire game can access it.
+                </p>
+
+                <pre><code>
+m_playerData->shells = j["money"]["shells"];
+m_playerData->ownedUnits[uid] = { level, form };
+m_playerData->completedStages.insert(stageUid);
+    </code></pre>
+
+                <p>
+                    When the game closes, <code>DataLoader::terminate()</code> rewrites the player's updated progress into JSON.
+                    Using the same format for loading and saving ensures stability and consistency.
+                </p>
+
+                <h3>Architectural Benefits</h3>
+
+                <p>
+                    Relying on external data files created several long-term advantages:
+                </p>
+
+                <ul>
+                    <li>Adding new units, enemies, or stages requires no C++ changes at all.</li>
+                    <li>Balancing values or tweaking gameplay timing is immediate and safe.</li>
+                    <li>JSON files act as reference documentation for every subsystem.</li>
+                    <li>The engine stays clean: data is entirely separated from logic.</li>
+                    <li>Debugging becomes simpler because every value has a single authoritative source.</li>
+                </ul>
+
+                <p>
+                    This makes the game significantly more maintainable and opens the door for future tools such as
+                    an in-engine editor or modding support.
+                </p>
+            </section>
+
+
+            <section class="project-block" id="ui-system">
+                <h2>UI System</h2>
+
+                <p>
+                    I designed the UI layer as a small, reusable framework that I could drop into other SFML projects.
+                    The goal was not to build a full GUI library, but to keep UI code clean, composable and easy to iterate on —
+                    the exact opposite of ad-hoc screens glued together with duplicated logic.
+                </p>
+
+                <h3>High level design</h3>
+                <p>
+                    The system rests on two clear responsibilities:
+                </p>
+                <ul>
+                    <li><strong>UIManager</strong>: orchestration, lifecycle and screen generation (creates HUD, menus, battle UI, etc.).</li>
+                    <li><strong>UIElement</strong>: a minimal base class for every widget (position, size, visibility, update, render, event handling).</li>
+                </ul>
+
+                <p>
+                    This separation keeps the manager lightweight (it doesn't implement UI behaviour) and makes every widget
+                    independently testable and reusable.
+                </p>
+
+                <h3>Core classes</h3>
+
+                <p><strong>UIManager</strong> — responsibilities:</p>
+                <ul>
+                    <li>Initialize elements with references to <code>DataLoader</code> and the active <code>Stage</code>.</li>
+                    <li>Update and render UI elements each frame, deciding whether to draw screen-space or world-space widgets.</li>
+                    <li>Propagate input events to elements and expose simple callbacks for gameplay (e.g. buy unit, change speed).</li>
+                    <li>Provide factory methods such as <code>generate_battle_uis()</code>, <code>generate_upgrade_menu_uis()</code>, etc.</li>
+                </ul>
+
+                <p><strong>UIElement</strong> — core contract:</p>
+                <ul>
+                    <li>Properties: <code>m_position</code>, <code>m_size</code>, <code>m_isVisible</code>, <code>isWorldSpaceUi</code>.</li>
+                    <li>API: <code>update(float)</code>, <code>render(sf::RenderWindow&)</code>, <code>handle_event(const sf::Event&)</code>, <code>get_bounds()</code>.</li>
+                    <li>Reasoning: keep widgets close to SFML primitives (rectangle, sprite, text) to avoid heavy abstractions.</li>
+                </ul>
+
+                <h3>Primary widgets</h3>
+                <p>Three small, composposable widgets cover most needs:</p>
+                <ul>
+                    <li><code>UIButtonElement</code> — rectangle background + label + click callback. Used for purchase buttons, menu actions, etc.</li>
+                    <li><code>UITextElement</code> — dynamic text node for labels, timers and debug values.</li>
+                    <li><code>UITextureElement</code> — image/sprite widget with aspect-ratio scaling for icons and thumbnails.</li>
+                </ul>
+
+                <h3>How UI talks to the game</h3>
+                <p>
+                    The manager avoids tight coupling: it holds a reference to <code>Stage</code> and <code>DataLoader</code> but
+                    most interactions go through callbacks. For example, a buy button only invokes a stored <code>std::function&lt;void()&gt;</code>,
+                    and the actual purchase logic lives in the gameplay layer. This keeps the UI testable and safe to reuse.
+                </p>
+
+                <h3>Screen-space vs World-space</h3>
+                <p>
+                    Elements can be flagged as world-space (rendered using the game camera) or screen-space (HUD / menus).
+                    The <code>UIManager::render_uis</code> method selects the correct view before drawing each element, so UI
+                    never accidentally mixes coordinate systems.
+                </p>
+
+                <h3>Practical tradeoffs and lessons</h3>
+                <ul>
+                    <li>The framework is intentionally small — it was built for rapid iteration rather than feature completeness. For larger projects you’d want layout constraints, anchors, and batching.</li>
+                    <li>Keeping widgets simple (text, texture, button) made it trivial to assemble complex screens by composition instead of inheritance.</li>
+                    <li>Using callbacks rather than direct game calls dramatically reduced coupling and prevented the UI layer from becoming a mess of game logic.</li>
+                    <li>Reusability paid off: I reused the same system in a game jam and was able to build fully working screens in a few minutes.</li>
+                </ul>
+
+                <h3>Example snippets</h3>
+                <p>How UI elements are created and registered with the manager (simplified):</p>
+                <pre><code>// create a purchase button and attach a callback
+auto buyBtn = std::make_shared&lt;UIButtonElement&gt;(sf::Vector2f{120,40}, sf::Vector2f{10,10});
+buyBtn->set_text("Buy");
+buyBtn->set_callback([this, unitUID]() { stage->spawn_unit(dataLoader->get_unit_data(unitUID)); });
+uiManager->add_ui_element(buyBtn);
+    </code></pre>
+
+                <p>How UIManager separates screen/world rendering:</p>
+                <pre><code>void UIManager::render_uis(sf::RenderWindow&amp; window, sf::View&amp; uiView, sf::View&amp; worldView)
+{
+    window.setView(uiView);
+    for (auto &e : m_uiElements) if (!e->isWorldSpaceUi) e->render(window);
+
+    window.setView(worldView);
+    for (auto &e : m_uiElements) if (e->isWorldSpaceUi) e->render(window);
+}
+    </code></pre>
+
+                <h3>What to improve next</h3>
+                <ul>
+                    <li>Introduce a lightweight layout system (rows/columns, padding) to avoid manual positioning for larger screens.</li>
+                    <li>Add input focus handling and keyboard navigation for accessibility/testing.</li>
+                    <li>Batch draw calls where possible to reduce render overhead if UI grows.</li>
+                </ul>
+
+                <p>
+                    Overall, the UI System shows an architectural mindset: small, well-defined interfaces, low coupling via callbacks,
+                    and a clear separation of responsibilities. It’s lightweight but practical — exactly what I needed for rapid iteration
+                    and reuse across small SFML projects.
+                </p>
+            </section>
+
 
             <details class="technical-section">
                 <summary>Debug Tools</summary>
