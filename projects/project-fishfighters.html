@@ -444,40 +444,39 @@ m_enemies[enemy->currentLayer].push_back(enemy);
             </details>
 
 
-            <section id="game-data-files">
-                <h2>Game & Player Data</h2>
+            <details class="technical-section">
+                <summary>Game & Player Data</summary>
+                <div class="technical-content">
 
-                <p>
-                    The game relies heavily on external data files to describe nearly all its static and persistent content:
-                    units, enemies, stages, chapters, and the player's progression. Instead of hardcoding these values inside
-                    the engine, I chose to build a fully data-driven system based on JSON files and a dedicated <code>DataLoader</code>.
-                    This approach keeps the game flexible, easier to balance, and quicker to iterate on.
-                </p>
+                    <p>
+                        The game relies heavily on external data files to describe nearly all its static and persistent content:
+                        units, enemies, stages, chapters, and the player's progression. Instead of hardcoding these values inside
+                        the engine, a fully data-driven system built around JSON files and a dedicated <code>DataLoader</code>
+                        handles everything dynamically. This makes content tuning faster, safer, and more scalable.
+                    </p>
 
-                <h3>Why JSON?</h3>
+                    <h3>Why JSON?</h3>
 
-                <p>
-                    JSON was chosen for three main reasons. First, it remains extremely readable, which is essential when tuning
-                    entities, stages, or progression. Second, it supports nested objects and arrays natively, which map well to
-                    my in-game structures such as <code>EntityData</code> or <code>StageData</code>. Third, the
-                    <code>nlohmann::json</code> library provides a simple, expressive API that avoids writing any custom parsing code.
-                </p>
+                    <p>
+                        JSON was selected because it is easy to read, supports nested structures, and integrates naturally with
+                        the <code>nlohmann::json</code> library. Entities, stages, rewards, and chapters all map cleanly to JSON
+                        objects without requiring any custom parsing logic.
+                    </p>
 
-                <p>
-                    Choosing JSON over a custom format was an intentional architectural decision: it reduces maintenance cost,
-                    prevents format bugs, and allows me to focus on gameplay logic rather than tools engineering.
-                </p>
+                    <p>
+                        Choosing JSON over a proprietary format reduces maintenance cost and complexity. It prevents parser bugs,
+                        simplifies debugging, and lets the focus remain on gameplay instead of tooling.
+                    </p>
 
-                <h3>DataLoader: A Centralized Loading System</h3>
+                    <h3>DataLoader: A Centralized Loading System</h3>
 
-                <p>
-                    All game data is loaded through the <code>DataLoader</code> at startup. It is responsible for reading JSON files,
-                    converting them into strongly-typed C++ structures, and storing them in internal databases.
-                    Its interface stays clean and minimal: <code>load_all()</code> called once at startup,
-                    <code>terminate()</code> called when the game exits.
-                </p>
+                    <p>
+                        All game data is loaded at startup through a single entry point: <code>DataLoader::load_all()</code>.
+                        This function reads JSON files, converts parsed objects into strongly typed C++ structures,
+                        and stores them into internal databases.
+                    </p>
 
-                <pre><code>
+                    <pre><code>
 bool DataLoader::load_all()
 {
     return load_units("game_data/units.json") &&
@@ -486,95 +485,93 @@ bool DataLoader::load_all()
            load_chapters("game_data/chapters.json") &&
            load_player("game_data/player.json");
 }
-    </code></pre>
+        </code></pre>
 
-                <p>
-                    Each loading function maps one JSON file to an internal database (units, enemies, stages, chapters),
-                    stored using <code>std::shared_ptr</code> to ensure safe sharing between systems. The design keeps the loader
-                    purely functional: it never performs gameplay logic, only deserialization.
-                </p>
+                    <p>
+                        Each loading function maps one JSON file to a local database stored using <code>std::shared_ptr</code>.
+                        The loader performs no gameplay logic: it only deserializes data and guarantees correctness.
+                    </p>
 
-                <h3>Units & Enemies Database</h3>
+                    <h3>Units & Enemies Database</h3>
 
-                <p>
-                    Units and enemies share the same underlying structure: <code>EntityData</code>. JSON files define all the values
-                    necessary to build an entity: stats, attack timings, movement speed, textures, and animation metadata.
-                </p>
+                    <p>
+                        Both units and enemies are described using <code>EntityData</code>. The JSON format defines stats, attack
+                        timings, textures, animations, and movement values. For player units, multiple forms and levels can be
+                        defined inside the same JSON entry.
+                    </p>
 
-                <p>
-                    During loading, the DataLoader reads each entry and constructs an <code>EntityData</code> instance. For player
-                    units, the system supports multiple forms and levels, so the JSON file exposes these variants as nested objects.
-                    Those forms are flattened and stored into <code>m_unitsFormsDatabase</code> using a composite key
-                    <code>(UID, form)</code>.
-                </p>
+                    <p>
+                        These forms are flattened into the <code>m_unitsFormsDatabase</code> using a composite key
+                        <code>(UID, form)</code>, making retrieval deterministic while keeping loading logic contained in one place.
+                    </p>
 
-                <pre><code>
+                    <pre><code>
 m_unitsFormsDatabase[{UID, formID}] = data;
-    </code></pre>
+        </code></pre>
 
-                <p>
-                    This ensures that retrieving the correct form is always deterministic and requires no lookup logic elsewhere.
-                </p>
+                    <h3>Stages, Waves, and Rewards</h3>
 
-                <h3>Stages, Waves, and Rewards</h3>
+                    <p>
+                        The game's levels are fully defined through <code>StageData</code>: enemy limits, base health,
+                        battlefield length, backgrounds, and wave sequencing. Each wave is represented by an
+                        <code>EnemyStageData</code> structure describing spawn delays, timers, quantities, and conditional
+                        triggers such as base-health thresholds.
+                    </p>
 
-                <p>
-                    All level content is stored inside <code>StageData</code> entries. The JSON format defines spawn limits, the
-                    battlefield length, enemy waves, textures, and completion rewards. Each wave is represented by an
-                    <code>EnemyStageData</code> structure describing spawning behavior, timers, magnification values, and
-                    conditional triggers such as base-health thresholds.
-                </p>
+                    <p>
+                        Completion rewards are stored as <code>RewardData</code> and can grant currency or unlock new units.
+                        This makes stage progression tunable directly through data files.
+                    </p>
 
-                <p>
-                    Stages also define rewards such as currency or unit unlocks. These are represented as <code>RewardData</code>,
-                    making progression tuning entirely data-driven.
-                </p>
+                    <h3>Chapters: World Structure</h3>
 
-                <h3>Chapters: World Structure</h3>
+                    <p>
+                        Chapters group stages together and define their position on the world map. The JSON file contains
+                        a list of stage IDs with coordinates. Once loaded, the UI simply reads this data to build the overworld
+                        dynamically.
+                    </p>
 
-                <p>
-                    Chapters group stages together and define their positions on the world map. The JSON file stores a simple list
-                    of stage entries with coordinates. This allows the world UI to update dynamically as soon as the data is loaded.
-                </p>
+                    <h3>PlayerData: Persistent Progression</h3>
 
-                <h3>PlayerData: Persistent Progression</h3>
+                    <p>
+                        The player's progression lives in <code>player.json</code>. It stores currency, owned units, equipped
+                        units, and completed levels. The DataLoader converts this into a <code>PlayerData</code> structure shared
+                        across the entire game through <code>std::shared_ptr</code>.
+                    </p>
 
-                <p>
-                    The player's progression is stored in <code>player.json</code>. It contains currency, owned units, equipped
-                    units, and completed stages. The DataLoader converts this JSON file into a <code>PlayerData</code> structure,
-                    held as a <code>std::shared_ptr</code> so the entire game can access it.
-                </p>
-
-                <pre><code>
+                    <pre><code>
 m_playerData->shells = j["money"]["shells"];
 m_playerData->ownedUnits[uid] = { level, form };
 m_playerData->completedStages.insert(stageUid);
-    </code></pre>
+        </code></pre>
 
-                <p>
-                    When the game closes, <code>DataLoader::terminate()</code> rewrites the player's updated progress into JSON.
-                    Using the same format for loading and saving ensures stability and consistency.
-                </p>
+                    <p>
+                        When the game closes, <code>DataLoader::terminate()</code> serializes the updated progression back into
+                        JSON. Loading and saving rely on the same structure, which ensures stability and long-term consistency.
+                    </p>
 
-                <h3>Architectural Benefits</h3>
+                    <h3>Architectural Benefits</h3>
 
-                <p>
-                    Relying on external data files created several long-term advantages:
-                </p>
+                    <p>
+                        This fully data-driven design provides several major long-term advantages:
+                    </p>
 
-                <ul>
-                    <li>Adding new units, enemies, or stages requires no C++ changes at all.</li>
-                    <li>Balancing values or tweaking gameplay timing is immediate and safe.</li>
-                    <li>JSON files act as reference documentation for every subsystem.</li>
-                    <li>The engine stays clean: data is entirely separated from logic.</li>
-                    <li>Debugging becomes simpler because every value has a single authoritative source.</li>
-                </ul>
+                    <ul>
+                        <li>No C++ changes are required to add new content.</li>
+                        <li>Balancing becomes safe and immediate.</li>
+                        <li>JSON files document the entire game structure.</li>
+                        <li>Logic remains isolated from data.</li>
+                        <li>Debugging is simpler because all values have a single authoritative source.</li>
+                    </ul>
 
-                <p>
-                    This makes the game significantly more maintainable and opens the door for future tools such as
-                    an in-engine editor or modding support.
-                </p>
-            </section>
+                    <p>
+                        This architecture keeps the engine clean and makes the project scalable. It even opens the door to
+                        future features such as an in-game editor or modding support.
+                    </p>
+
+                </div>
+            </details>
+
 
 
             <details class="technical-section">
