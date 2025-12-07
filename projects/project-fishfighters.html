@@ -183,151 +183,176 @@
                 <summary>Game Entities</summary>
                 <div class="technical-content">
 
-                    <h4>Concept: Templates vs. Runtime Instances</h4>
                     <p>
-                        In Fish Fighters each unit exists in two distinct forms:
-                        a <strong>data template</strong> and a <strong>runtime instance</strong>.
-                        The template is represented by the <code>EntityData</code> struct (serializable to JSON)
-                        and contains only raw values (cost, health, attackPower, texture path, etc.).
-                        The runtime actor is a <code>BattleEntity</code> (concrete types: <code>BattleUnit</code>, <code>BattleEnemy</code>)
-                        which owns state, animations, hitboxes and a <code>StateMachine</code>.
+                        All units and enemies in the game share the same underlying architecture. Instead of maintaining two
+                        completely different systems, I designed a single <code>Entity</code> class capable of representing
+                        anything that enters the battlefield. The goal was to keep the core gameplay logic centralized while
+                        allowing every type of creature to define its identity through external data.
                     </p>
 
-                    <h4>Why this separation?</h4>
+                    <h3>A Single Entity System</h3>
+
                     <p>
-                        Separating data from behavior gives several practical benefits:
-                        it makes the game <em>data-driven</em> (UI and tools can read templates directly),
-                        prevents accidental mutation of template values during gameplay,
-                        and keeps the runtime objects focused on behaviour, not storage.
-                        This approach mirrors patterns used in production engines (ScriptableObjects / data assets).
+                        Every entity is built from a common structure called <code>EntityData</code>, loaded from JSON.
+                        It contains everything the game needs: health, attack values, movement speed, animations,
+                        and special attributes like knockback distance or attack cooldowns. This lets the engine treat
+                        units and enemies exactly the same way during combat while still giving them distinct behavior.
                     </p>
 
-                    <h4>Instantiation (how entities are spawned)</h4>
                     <p>
-                        Entities are created by the <code>Stage</code> using an <code>EntityData</code> pointer returned by the <code>DataLoader</code>.
-                        The runtime instance holds a shared pointer to its template:
-                        <code>std::shared_ptr<EntityData> data</code>, and copies/derives runtime fields (currentHealth, cooldown, etc.)
-                        from that template upon construction.
+                        Once created, an <code>Entity</code> instance keeps its own runtime state using
+                        <code>EntityRuntimeData</code> (current HP, timers, stagger state, knockback counters, and so on),
+                        while <code>EntityData</code> remains immutable. This separation keeps the gameplay code safe:
+                        read-only static data on one side, dynamic battle values on the other.
                     </p>
 
-                    <p><strong>Example (simplified):</strong></p>
-                    <pre><code>// create a BattleEnemy from template data
-auto data = m_dataLoader->get_enemy_data(uid);
-auto enemy = std::make_shared<BattleEnemy>(data, magnification);
-enemy->set_current_stage(shared_from_this());
-enemy->init_state_machine();
-enemy->stateMachine->change_state(std::make_unique<IdleState>(enemy->stateMachine));
-m_enemies[enemy->currentLayer].push_back(enemy);
-</code></pre>
+                    <h3>Composition Over Inheritance</h3>
 
-                    <h4>Runtime modifiers and magnification</h4>
                     <p>
-                        Templates stay immutable while a <code>BattleEntity</code> computes its runtime stats at spawn.
-                        For example, player progression or level multipliers are applied through a <code>magnification</code> vector:
-                        <code>sf::Vector2f magnification</code> where <code>.x</code> affects HP and <code>.y</code> affects attack.
-                        This makes it trivial to support buffs, upgrades or difficulty scaling without altering templates.
+                        Entity behavior is not determined through a giant inheritance tree.
+                        Instead, the Entity class delegates its logic to several small components:
                     </p>
 
-                    <h4>Hitboxes, visuals and derived values</h4>
-                    <p>
-                        Several runtime values are derived from template fields: hitbox size is calculated from the entity texture
-                        (larger textures → larger hitboxes), attack & damage zones are computed from <code>damageZone</code> offsets,
-                        and animation frame timing is driven by template frame counts + a per-instance timer.
-                        Keeping these derived calculations in the instance keeps the template clean and the logic explicit.
-                    </p>
-
-                    <h4>Entities and the rest of the system</h4>
-                    <p>
-                        Because the template is accessible project-wide, UI screens (shop, unit info) read <code>EntityData</code>
-                        directly to show cost, description and iconography. Meanwhile the gameplay loop working in <code>Stage::update()</code>
-                        operates on collections of <code>BattleEntity</code> instances for targeting, collision and wave flow.
-                    </p>
-
-                    <h4>Benefits observed</h4>
                     <ul>
-                        <li>Easy tuning: add or tweak units by editing JSON — no recompilation required.</li>
-                        <li>Cleaner code: runtime state and data are not mixed, which reduced bugs during refactors.</li>
-                        <li>Reusability: same template used by UI, spawn logic and analytics tools.</li>
+                        <li><strong>Movement component</strong> for forward motion and knockback.</li>
+                        <li><strong>Combat component</strong> for attack timing, ranges, and damage application.</li>
+                        <li><strong>Animation controller</strong> handling sprite playback based on state.</li>
+                        <li><strong>State machine</strong> that coordinates the entity’s current behavior.</li>
                     </ul>
+
+                    <p>
+                        Each component reads only the data it needs from <code>EntityData</code> and operates independently.
+                        This makes it easier to modify or extend the gameplay without rewriting the whole system.
+                    </p>
+
+                    <h3>Animation System</h3>
+
+                    <p>
+                        Animations come directly from JSON as well: sprite sheets, frame counts, timing, offsets, and scaling.
+                        The animation controller blends this information with the state machine so the correct animation plays
+                        automatically whenever the entity changes behavior. Since animations are fully data-driven, adding a
+                        new unit or enemy is simply a matter of dropping its sprite sheet and writing its JSON entry.
+                    </p>
+
+                    <h3>Runtime Behavior</h3>
+
+                    <p>
+                        Once on the battlefield, each entity updates every frame according to its state machine.
+                        Movement, attacking, taking hits, knockback, and dying all go through well-defined transitions.
+                        The gameplay layer sees entities only through a clean interface — move, attack, receive damage —
+                        which helps keep the Stage system simple.
+                    </p>
+
+                    <h3>Why this architecture scales</h3>
+
+                    <p>
+                        By centralizing all gameplay logic in one Entity class and letting JSON define variants,
+                        the system stays easy to maintain. Adding content never requires new C++ classes.
+                        Testing becomes faster because every unit is governed by the same rules, and balancing becomes
+                        largely a data-editing process. This architecture also makes it possible to integrate new mechanics
+                        or unit types by expanding the components instead of rewriting entire subsystems.
+                    </p>
 
                 </div>
             </details>
 
+            <details class="technical-section">
+                <summary>Entities’ State Machine</summary>
+                <div class="technical-content">
 
-            <section class="technical-section">
-                <details>
-                    <summary>Entities’ State Machine</summary>
-                    <div>
-                        <p>
-                            Each <code>BattleEntity</code> in the game is driven by a dedicated
-                            <code>StateMachine</code> responsible for handling behaviour such as idling,
-                            walking, attacking, or being knocked back. Instead of relying on a large
-                            <code>switch</code> statement or a shared enum, each behaviour is encapsulated
-                            inside its own class derived from <code>BaseState</code>. This keeps logic
-                            isolated and makes transitions explicit and maintainable.
-                        </p>
+                    <p>
+                        Every entity in the game — unit or enemy — is driven by a small but highly expressive state machine.
+                        The idea was simple: rather than scattering gameplay logic across many conditionals, every piece of an
+                        entity’s behavior should flow through a predictable sequence of states. This made the system both easy to
+                        debug and easy to extend whenever I introduced a new mechanic.
+                    </p>
 
-                        <h4>Architecture</h4>
-                        <p>
-                            The <code>StateMachine</code> owns a single active state through a
-                            <code>std::unique_ptr&lt;BaseState&gt;</code>. States are lightweight objects
-                            that hold a reference back to the machine, allowing them to request transitions
-                            when needed. A state follows a clear lifecycle:
-                        </p>
+                    <h3>Why a State Machine?</h3>
 
-                        <p>
-                            • <code>enter()</code> is called exactly once when the state becomes active.<br>
-                            • <code>perform()</code> runs every frame and contains the state’s logic.<br>
-                            • <code>exit()</code> is called exactly once before the state is replaced.
-                        </p>
+                    <p>
+                        Combat entities constantly alternate between distinct modes of behavior: walking, attacking, being knocked back,
+                        recovering, or dying. Without a clear structure, these transitions quickly turn messy and hard to maintain.
+                        A finite state machine solves this by forcing every entity to exist in exactly one state at a time,
+                        with explicit rules determining how it moves to the next one.
+                    </p>
 
-                        <p>
-                            Transitioning from one state to another happens through
-                            <code>change_state()</code>, which automatically calls <code>exit()</code> on
-                            the old state and <code>enter()</code> on the new one. Because the machine holds
-                            the state via <code>unique_ptr</code>, ownership and lifetime are always clear.
-                        </p>
+                    <p>
+                        Instead of writing different logic for units and enemies, both rely on the same state machine.
+                        The difference comes from <code>EntityData</code>: attack timings, movement speed, stagger duration,
+                        knockback strength, and animation metadata all come from the JSON definition.
+                        As a result, the state machine does not need special cases for each creature type.
+                    </p>
 
-                        <h4>Example: AttackState</h4>
-                        <p>
-                            The <code>AttackState</code> handles everything related to an attack cycle. It
-                            manages foreswing timing, applies damage at the right moment, checks for valid
-                            targets, and determines the next state once the attack is finished. It can
-                            transition to different states depending on the context:
-                        </p>
+                    <h3>State Architecture</h3>
 
-                        <p>
-                            • No target in range → switch to <code>WalkState</code><br>
-                            • Attack executed → return to <code>IdleState</code><br>
-                            • Entity is knocked back → switch to <code>KnockbackState</code>
-                        </p>
+                    <p>
+                        Each state is a small C++ class inheriting from a common base (<code>EntityState</code>) and implements
+                        its own behavior through three simple methods: <code>enter()</code>, <code>update()</code>,
+                        and <code>exit()</code>. An <code>EntityStateMachine</code> object lives inside every <code>Entity</code>
+                        and holds the current state.
+                    </p>
 
-                        <p>
-                            Because the attack behaviour is isolated inside its own class, the entity’s
-                            main update function stays clean. The <code>BattleEntity</code> simply calls
-                            <code>stateMachine->update_state(deltaTime)</code> each frame.
-                        </p>
+                    <ul>
+                        <li><strong>IdleState</strong>: Waiting for the next action (rarely used in combat flow).</li>
+                        <li><strong>WalkState</strong>: Moving toward the opposing base or the closest enemy.</li>
+                        <li><strong>AttackState</strong>: Handling attack wind-up, hit timing, and recovery.</li>
+                        <li><strong>KnockbackState</strong>: Pushed backward after taking a strong hit.</li>
+                        <li><strong>StaggerState</strong>: Temporarily disabled after being damaged.</li>
+                        <li><strong>DieState</strong>: Playing the death animation and removing the entity.</li>
+                    </ul>
 
-                        <h4>Why this design works</h4>
-                        <p>
-                            Before this system, entity behaviour was handled through a large
-                            <code>switch</code> statement inside <code>BattleEntity</code>. As more
-                            behaviours were added, the code became hard to read, harder to extend, and easy
-                            to break. By moving each behaviour into its own class, the logic became modular
-                            and easier to reason about. States can now evolve independently without creating
-                            chain reactions of side effects.
-                        </p>
+                    <p>
+                        Each state is intentionally small. For example, <code>WalkState</code> only handles forward motion
+                        and checks whether the entity should transition to attacking. <code>AttackState</code> manages the
+                        attack timer and triggers damage at the exact hit frame. This separation keeps behavior modular
+                        and prevents “god classes”.
+                    </p>
 
-                        <p>
-                            This design also makes debugging significantly simpler: the active state is
-                            always known, transitions are explicit, and each behaviour is contained in a
-                            well-defined place in the codebase. Adding new behaviour, like a stun state or a
-                            charge attack, only requires adding a new class and defining its transitions.
-                        </p>
-                    </div>
-                </details>
-            </section>
+                    <h3>Driving the Animation System</h3>
 
+                    <p>
+                        The state machine is closely tied to the animation controller. Whenever a state becomes active,
+                        it requests the correct animation (walk, hit, knockback, death) directly from <code>EntityData</code>.
+                        Timing remains perfectly consistent because states and animations share the same metadata.
+                        This creates smooth visuals without any hardcoded frame values in the gameplay code.
+                    </p>
+
+                    <h3>Transitions and Decision Making</h3>
+
+                    <p>
+                        The entity makes decisions through small triggers scattered across the update cycle:
+                    </p>
+
+                    <ul>
+                        <li>Clash detection switches from walking to attacking.</li>
+                        <li>Receiving damage may trigger stagger or knockback depending on attack strength.</li>
+                        <li>HP reaching zero transitions to the death state.</li>
+                    </ul>
+
+                    <p>
+                        Transitions stay clean and readable because no state tries to do the job of another.
+                        The entity is always in a well-defined phase of its behaviour, which makes bugs much easier
+                        to spot and eliminates edge cases where multiple systems fight over control.
+                    </p>
+
+                    <h3>Why this design works</h3>
+
+                    <p>
+                        This state machine architecture allowed me to add new behaviors without breaking existing ones.
+                        For example, introducing knockback required only one additional state and a small modification
+                        to the damage system. Everything else — animations, movement, transitions — already fit into the
+                        structure naturally.
+                    </p>
+
+                    <p>
+                        This approach also scales well for future work. Adding mechanics like charging attacks,
+                        special abilities, or unique enemy behaviors can be done by simply creating new states
+                        rather than modifying old ones. This keeps the Entity class stable and lets complexity grow
+                        in a controlled, modular way.
+                    </p>
+
+                </div>
+            </details>
 
             <details class="technical-section">
                 <summary>Stages, Waves & Rewards</summary>
@@ -443,37 +468,34 @@ m_enemies[enemy->currentLayer].push_back(enemy);
                 </div>
             </details>
 
-
             <details class="technical-section">
                 <summary>Game & Player Data</summary>
                 <div class="technical-content">
 
                     <p>
-                        The game relies heavily on external data files to describe nearly all its static and persistent content:
-                        units, enemies, stages, chapters, and the player's progression. Instead of hardcoding these values inside
-                        the engine, a fully data-driven system built around JSON files and a dedicated <code>DataLoader</code>
-                        handles everything dynamically. This makes content tuning faster, safer, and more scalable.
+                        The game relies a lot on external data files to define almost everything: units, enemies,
+                        stages, chapters, and the player's progression. Instead of hardcoding these values,
+                        I went for a data-driven approach using JSON files and a simple loader class called
+                        <code>DataLoader</code>. This keeps the project flexible and avoids recompiling
+                        every time I tweak balance values.
                     </p>
 
                     <h3>Why JSON?</h3>
 
                     <p>
-                        JSON was selected because it is easy to read, supports nested structures, and integrates naturally with
-                        the <code>nlohmann::json</code> library. Entities, stages, rewards, and chapters all map cleanly to JSON
-                        objects without requiring any custom parsing logic.
+                        JSON is readable, lightweight, and maps naturally to the kind of structures the game uses.
+                        The <code>nlohmann::json</code> library also keeps parsing simple, so I didn't have
+                        to write any custom parsing logic. It works especially well with nested structures such as
+                        <code>EntityData</code> or <code>StageData</code>.
                     </p>
 
-                    <p>
-                        Choosing JSON over a proprietary format reduces maintenance cost and complexity. It prevents parser bugs,
-                        simplifies debugging, and lets the focus remain on gameplay instead of tooling.
-                    </p>
-
-                    <h3>DataLoader: A Centralized Loading System</h3>
+                    <h3>How the DataLoader works</h3>
 
                     <p>
-                        All game data is loaded at startup through a single entry point: <code>DataLoader::load_all()</code>.
-                        This function reads JSON files, converts parsed objects into strongly typed C++ structures,
-                        and stores them into internal databases.
+                        All files are loaded at startup through one function: <code>DataLoader::load_all()</code>.
+                        Each JSON file (units, enemies, stages, chapters, player data) is deserialized
+                        into strongly-typed structures stored as <code>std::shared_ptr</code>. The loader is
+                        intentionally simple: it only handles data, never gameplay logic.
                     </p>
 
                     <pre><code>
@@ -487,91 +509,61 @@ bool DataLoader::load_all()
 }
         </code></pre>
 
-                    <p>
-                        Each loading function maps one JSON file to a local database stored using <code>std::shared_ptr</code>.
-                        The loader performs no gameplay logic: it only deserializes data and guarantees correctness.
-                    </p>
-
                     <h3>Units & Enemies Database</h3>
 
                     <p>
-                        Both units and enemies are described using <code>EntityData</code>. The JSON format defines stats, attack
-                        timings, textures, animations, and movement values. For player units, multiple forms and levels can be
-                        defined inside the same JSON entry.
-                    </p>
-
-                    <p>
-                        These forms are flattened into the <code>m_unitsFormsDatabase</code> using a composite key
-                        <code>(UID, form)</code>, making retrieval deterministic while keeping loading logic contained in one place.
+                        Units and enemies share the same C++ structure: <code>EntityData</code>.
+                        All the gameplay parameters — stats, timings, textures, animations — come from their JSON files.
+                        Player units can have multiple forms and upgrade levels. These variants are flattened into
+                        a database using a composite key <code>(UID, form)</code>:
                     </p>
 
                     <pre><code>
 m_unitsFormsDatabase[{UID, formID}] = data;
         </code></pre>
 
+                    <p>
+                        This makes lookups straightforward and avoids scattering form-selection logic across the codebase.
+                    </p>
+
                     <h3>Stages, Waves, and Rewards</h3>
 
                     <p>
-                        The game's levels are fully defined through <code>StageData</code>: enemy limits, base health,
-                        battlefield length, backgrounds, and wave sequencing. Each wave is represented by an
-                        <code>EnemyStageData</code> structure describing spawn delays, timers, quantities, and conditional
-                        triggers such as base-health thresholds.
+                        Stages are defined using <code>StageData</code>: enemy waves, spawn rates, backgrounds,
+                        world length, limits, and completion rewards. Each wave corresponds to an
+                        <code>EnemyStageData</code> entry that stores spawn timings, quantities, conditions
+                        (like base-HP thresholds), and magnification values.
                     </p>
 
                     <p>
-                        Completion rewards are stored as <code>RewardData</code> and can grant currency or unlock new units.
-                        This makes stage progression tunable directly through data files.
+                        Rewards are stored as <code>RewardData</code>, allowing stages to give shells or unlock units
+                        when completed.
                     </p>
 
-                    <h3>Chapters: World Structure</h3>
+                    <h3>Chapters & Player Progression</h3>
 
                     <p>
-                        Chapters group stages together and define their position on the world map. The JSON file contains
-                        a list of stage IDs with coordinates. Once loaded, the UI simply reads this data to build the overworld
-                        dynamically.
+                        Chapters group stages together and give them map coordinates. Loading the chapter file is enough
+                        for the world map UI to update automatically.
                     </p>
 
-                    <h3>PlayerData: Persistent Progression</h3>
-
                     <p>
-                        The player's progression lives in <code>player.json</code>. It stores currency, owned units, equipped
-                        units, and completed levels. The DataLoader converts this into a <code>PlayerData</code> structure shared
-                        across the entire game through <code>std::shared_ptr</code>.
+                        Player progression lives in <code>player.json</code>: owned units, forms, currency,
+                        and completed stages. When the game closes, <code>DataLoader::terminate()</code> saves everything
+                        back to disk using the same format.
                     </p>
 
-                    <pre><code>
-m_playerData->shells = j["money"]["shells"];
-m_playerData->ownedUnits[uid] = { level, form };
-m_playerData->completedStages.insert(stageUid);
-        </code></pre>
+                    <h3>Why this approach helps</h3>
 
                     <p>
-                        When the game closes, <code>DataLoader::terminate()</code> serializes the updated progression back into
-                        JSON. Loading and saving rely on the same structure, which ensures stability and long-term consistency.
-                    </p>
-
-                    <h3>Architectural Benefits</h3>
-
-                    <p>
-                        This fully data-driven design provides several major long-term advantages:
-                    </p>
-
-                    <ul>
-                        <li>No C++ changes are required to add new content.</li>
-                        <li>Balancing becomes safe and immediate.</li>
-                        <li>JSON files document the entire game structure.</li>
-                        <li>Logic remains isolated from data.</li>
-                        <li>Debugging is simpler because all values have a single authoritative source.</li>
-                    </ul>
-
-                    <p>
-                        This architecture keeps the engine clean and makes the project scalable. It even opens the door to
-                        future features such as an in-game editor or modding support.
+                        Putting all static data in JSON keeps the project much easier to maintain.
+                        Adding new content doesn't require touching C++ code, balancing becomes simpler,
+                        and debugging is cleaner since every value has a single source of truth.
+                        This also makes the project ready for future tools like an editor or basic modding.
                     </p>
 
                 </div>
             </details>
-
 
 
             <details class="technical-section">
