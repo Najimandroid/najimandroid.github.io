@@ -276,8 +276,8 @@ m_enemies[enemy->currentLayer].push_back(enemy);
                         </p>
 
                         <p>
-                            • <code>enter()</code> is called exactly once when the state becomes active.
-                            • <code>perform()</code> runs every frame and contains the state’s logic.
+                            • <code>enter()</code> is called exactly once when the state becomes active.<br>
+                            • <code>perform()</code> runs every frame and contains the state’s logic.<br>
                             • <code>exit()</code> is called exactly once before the state is replaced.
                         </p>
 
@@ -297,8 +297,8 @@ m_enemies[enemy->currentLayer].push_back(enemy);
                         </p>
 
                         <p>
-                            • No target in range → switch to <code>WalkState</code>
-                            • Attack executed → return to <code>IdleState</code>
+                            • No target in range → switch to <code>WalkState</code><br>
+                            • Attack executed → return to <code>IdleState</code><br>
                             • Entity is knocked back → switch to <code>KnockbackState</code>
                         </p>
 
