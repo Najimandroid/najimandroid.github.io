@@ -577,109 +577,101 @@ m_playerData->completedStages.insert(stageUid);
             </section>
 
 
-            <section class="project-block" id="ui-system">
-                <h2>UI System</h2>
+            <details class="technical-section">
+                <summary>UI System</summary>
+                <div class="technical-content">
+                    <p>
+                        The UI system was designed to be lightweight, fully event-driven, and easy to extend.
+                        Although the game has a simple presentation, the underlying UI architecture needed to be
+                        flexible enough to support menus, gameplay HUD, animations, tooltips, and reactive buttons.
+                    </p>
 
-                <p>
-                    I designed the UI layer as a small, reusable framework that I could drop into other SFML projects.
-                    The goal was not to build a full GUI library, but to keep UI code clean, composable and easy to iterate on —
-                    the exact opposite of ad-hoc screens glued together with duplicated logic.
-                </p>
+                    <h4>Core Principles</h4>
+                    <p>
+                        The system is built around three goals:
+                    </p>
+                    <p>
+                        • A clean separation between UI logic and rendering<br>
+                        • A lightweight hierarchy of UI widgets<br>
+                        • A minimal event pipeline so every UI element reacts only to what matters to it
+                    </p>
 
-                <h3>High level design</h3>
-                <p>
-                    The system rests on two clear responsibilities:
-                </p>
-                <ul>
-                    <li><strong>UIManager</strong>: orchestration, lifecycle and screen generation (creates HUD, menus, battle UI, etc.).</li>
-                    <li><strong>UIElement</strong>: a minimal base class for every widget (position, size, visibility, update, render, event handling).</li>
-                </ul>
+                    <h4>UI Hierarchy</h4>
+                    <p>
+                        Every screen is composed of <strong>widgets</strong>. A widget is a simple object with:
+                    </p>
+                    <p>
+                        • A position and size<br>
+                        • A visual renderer (texture, text, or colored quad)<br>
+                        • Optional interactivity (clickable, hoverable)<br>
+                        • Optional animation (fade, slide, pulse)
+                    </p>
+                    <p>
+                        Widgets can contain child widgets. This avoids micromanaging positions everywhere and lets
+                        entire UI panels move or fade with a single operation.
+                    </p>
 
-                <p>
-                    This separation keeps the manager lightweight (it doesn't implement UI behaviour) and makes every widget
-                    independently testable and reusable.
-                </p>
+                    <h4>Rendering Pipeline</h4>
+                    <p>
+                        The UI renderer is intentionally minimal: it draws elements in a strict order based on their
+                        depth. Each widget exposes a <code>Draw()</code> function, and the system simply walks the UI tree.
+                    </p>
+                    <p>
+                        Because the game uses 2D sprites and bitmap fonts, keeping the draw order stable and predictable
+                        was essential. No shader magic is involved — just clean batching and state-safe rendering.
+                    </p>
 
-                <h3>Core classes</h3>
+                    <h4>Interaction Model</h4>
+                    <p>
+                        The UI system uses <strong>event filtering</strong>: instead of sending every click to
+                        every widget, events propagate through the UI tree until something claims them.
+                    </p>
+                    <p>
+                        This avoids spaghetti logic and keeps input code small. For example:
+                    </p>
+                    <p>
+                        • Buttons only care about mouse hover and mouse press<br>
+                        • Tooltips are notified when an element gains focus<br>
+                        • Tabs listen for click events but ignore anything else<br>
+                    </p>
 
-                <p><strong>UIManager</strong> — responsibilities:</p>
-                <ul>
-                    <li>Initialize elements with references to <code>DataLoader</code> and the active <code>Stage</code>.</li>
-                    <li>Update and render UI elements each frame, deciding whether to draw screen-space or world-space widgets.</li>
-                    <li>Propagate input events to elements and expose simple callbacks for gameplay (e.g. buy unit, change speed).</li>
-                    <li>Provide factory methods such as <code>generate_battle_uis()</code>, <code>generate_upgrade_menu_uis()</code>, etc.</li>
-                </ul>
+                    <h4>Animations</h4>
+                    <p>
+                        Instead of relying on a heavy animation library, each widget can attach a small
+                        <strong>UIAnimation</strong> object that updates its alpha, position, or size over time.
+                    </p>
+                    <p>
+                        These animations are extremely cheap computationally and easy to chain. For example, buttons
+                        use a short scale-pulse on hover, making the UI feel alive without overcomplicating the codebase.
+                    </p>
 
-                <p><strong>UIElement</strong> — core contract:</p>
-                <ul>
-                    <li>Properties: <code>m_position</code>, <code>m_size</code>, <code>m_isVisible</code>, <code>isWorldSpaceUi</code>.</li>
-                    <li>API: <code>update(float)</code>, <code>render(sf::RenderWindow&)</code>, <code>handle_event(const sf::Event&)</code>, <code>get_bounds()</code>.</li>
-                    <li>Reasoning: keep widgets close to SFML primitives (rectangle, sprite, text) to avoid heavy abstractions.</li>
-                </ul>
+                    <h4>HUD Integration</h4>
+                    <p>
+                        The gameplay HUD (base health, shells, unit buttons, cooldowns) sits on top of the same widget system.
+                        This means HUD elements benefit from the same interactions and animations as any menu component.
+                    </p>
+                    <p>
+                        Because of this unification, features like scaling effects, flashing warnings, and dynamic updates
+                        took only a few lines of code.
+                    </p>
 
-                <h3>Primary widgets</h3>
-                <p>Three small, composposable widgets cover most needs:</p>
-                <ul>
-                    <li><code>UIButtonElement</code> — rectangle background + label + click callback. Used for purchase buttons, menu actions, etc.</li>
-                    <li><code>UITextElement</code> — dynamic text node for labels, timers and debug values.</li>
-                    <li><code>UITextureElement</code> — image/sprite widget with aspect-ratio scaling for icons and thumbnails.</li>
-                </ul>
-
-                <h3>How UI talks to the game</h3>
-                <p>
-                    The manager avoids tight coupling: it holds a reference to <code>Stage</code> and <code>DataLoader</code> but
-                    most interactions go through callbacks. For example, a buy button only invokes a stored <code>std::function&lt;void()&gt;</code>,
-                    and the actual purchase logic lives in the gameplay layer. This keeps the UI testable and safe to reuse.
-                </p>
-
-                <h3>Screen-space vs World-space</h3>
-                <p>
-                    Elements can be flagged as world-space (rendered using the game camera) or screen-space (HUD / menus).
-                    The <code>UIManager::render_uis</code> method selects the correct view before drawing each element, so UI
-                    never accidentally mixes coordinate systems.
-                </p>
-
-                <h3>Practical tradeoffs and lessons</h3>
-                <ul>
-                    <li>The framework is intentionally small — it was built for rapid iteration rather than feature completeness. For larger projects you’d want layout constraints, anchors, and batching.</li>
-                    <li>Keeping widgets simple (text, texture, button) made it trivial to assemble complex screens by composition instead of inheritance.</li>
-                    <li>Using callbacks rather than direct game calls dramatically reduced coupling and prevented the UI layer from becoming a mess of game logic.</li>
-                    <li>Reusability paid off: I reused the same system in a game jam and was able to build fully working screens in a few minutes.</li>
-                </ul>
-
-                <h3>Example snippets</h3>
-                <p>How UI elements are created and registered with the manager (simplified):</p>
-                <pre><code>// create a purchase button and attach a callback
-auto buyBtn = std::make_shared&lt;UIButtonElement&gt;(sf::Vector2f{120,40}, sf::Vector2f{10,10});
-buyBtn->set_text("Buy");
-buyBtn->set_callback([this, unitUID]() { stage->spawn_unit(dataLoader->get_unit_data(unitUID)); });
-uiManager->add_ui_element(buyBtn);
-    </code></pre>
-
-                <p>How UIManager separates screen/world rendering:</p>
-                <pre><code>void UIManager::render_uis(sf::RenderWindow&amp; window, sf::View&amp; uiView, sf::View&amp; worldView)
-{
-    window.setView(uiView);
-    for (auto &e : m_uiElements) if (!e->isWorldSpaceUi) e->render(window);
-
-    window.setView(worldView);
-    for (auto &e : m_uiElements) if (e->isWorldSpaceUi) e->render(window);
-}
-    </code></pre>
-
-                <h3>What to improve next</h3>
-                <ul>
-                    <li>Introduce a lightweight layout system (rows/columns, padding) to avoid manual positioning for larger screens.</li>
-                    <li>Add input focus handling and keyboard navigation for accessibility/testing.</li>
-                    <li>Batch draw calls where possible to reduce render overhead if UI grows.</li>
-                </ul>
-
-                <p>
-                    Overall, the UI System shows an architectural mindset: small, well-defined interfaces, low coupling via callbacks,
-                    and a clear separation of responsibilities. It’s lightweight but practical — exactly what I needed for rapid iteration
-                    and reuse across small SFML projects.
-                </p>
-            </section>
+                    <h4>Why This Matters</h4>
+                    <p>
+                        The UI system ended up being both simple and surprisingly powerful. Building it from scratch
+                        forced me to think about:
+                    </p>
+                    <p>
+                        • Responsiveness and input filtering<br>
+                        • Scene layering and draw order<br>
+                        • Reusable components instead of bespoke menus<br>
+                        • The trade-off between power and complexity in UI frameworks
+                    </p>
+                    <p>
+                        It's a compact system, but it taught me the fundamentals of designing reactive views without
+                        relying on game engines or prefab UI tools.
+                    </p>
+                </div>
+            </details>
 
 
             <details class="technical-section">
