@@ -23,7 +23,7 @@
         <section class="project-header">
 
             <h1 class="project-title">Fish Fighters</h1>
-            <p class="project-subtitle">A personal C++ tower defense project built with SFML.</p>
+            <p class="project-subtitle">Horizontal tower defense game prototype</p>
 
             <!-- IMAGE CAROUSEL -->
             <div class="carousel-container">
@@ -99,30 +99,37 @@
                     <h2>Overview</h2>
 
                     <p>
-                        Fish Fighters started as a personal challenge to push myself beyond the short, contained projects
-                        I had done before. I wanted to understand what it really takes to structure a larger game, the kind
-                        that forces you to think ahead instead of just writing code until it works.
+                        Fish Fighters started as a personal challenge: could I build a game prototype in C++
+                        from scratch, without relying on a full-fledged engine like Unity or Unreal?
+                        I wanted to deepen my understanding of project architecture; my objective was to produce clean code,
+                        modular systems, and easy-to-maintain data structures.
                     </p>
 
                     <p>
-                        A tower-defense game inspired by <em>The Battle Cats</em> felt like the perfect project.
-                        It’s simple enough to build alone, but it hides just enough complexity to make you think carefully
-                        about architecture, game flow, and data organization.
+                        For the game itself, I chose a horizontal tower defense genre heavily inspired by
+                        <em>The Battle Cats</em>. I've always enjoyed this genre of games: simple mechanics paired with real
+                        strategic depth. So I wanted to see if I could recreate that experience while focusing on solid architecture.
                     </p>
 
                     <p>
-                        This project wasn’t about making the flashiest game possible. It was about learning how to build
-                        something clean and modular, something that could grow without collapsing under its own weight.
+                        Even though the game looks relatively simple on the surface, I invested a lot of time into designing each system.
+                        I analysed how <em>The Battle Cats</em> handled its entities, waves and progression and thought about
+                        ways to adapt those ideas into an architecture that made sense for a small C++ project.
+                        My technical choices are covered in detail in the Technical Breakdown section below.
+                    </p>
+
+                    <p>
+                        In the end, Fish Fighters became a great learning experience. I'm very proud of how the codebase turned out
+                        and it taught me a lot about building maintainable C++ projects from the ground up.
                     </p>
 
                     <h2>Project Goals</h2>
 
                     <ul>
-                        <li>Build a complete small game entirely in modern C++.</li>
-                        <li>Design clean, modular systems (state machines, data-driven units, etc.).</li>
-                        <li>Experiment with JSON-driven gameplay data.</li>
-                        <li>Practice maintainable architecture over rapid prototyping.</li>
-                        <li>Develop tools to iterate on gameplay without recompilation.</li>
+                        <li>Build a complete small game entirely in C++.</li>
+                        <li>Design clean and modular systems.</li>
+                        <li>Use JSON files to format game data.</li>
+                        <li>Develop debugging tools to iterate on features more efficiently.</li>
                     </ul>
 
                     <h2>Links</h2>
@@ -184,75 +191,43 @@
                 <div class="technical-content">
 
                     <p>
-                        All units and enemies in the game share the same underlying architecture. Instead of maintaining two
-                        completely different systems, I designed a single <code>Entity</code> class capable of representing
-                        anything that enters the battlefield. The goal was to keep the core gameplay logic centralized while
-                        allowing every type of creature to define its identity through external data.
-                    </p>
-
-                    <h3>A Single Entity System</h3>
-
-                    <p>
-                        Every entity is built from a common structure called <code>EntityData</code>, loaded from JSON.
-                        It contains everything the game needs: health, attack values, movement speed, animations,
-                        and special attributes like knockback distance or attack cooldowns. This lets the engine treat
-                        units and enemies exactly the same way during combat while still giving them distinct behavior.
+                        One of my main goals was to avoid having separate classes for enemies and player units.
+                        In practice, they behave almost identically during battle and share most of their parameters.
+                        Maintaining two distinct class hierarchies would have meant duplicating a lot of logic.
                     </p>
 
                     <p>
-                        Once created, an <code>Entity</code> instance keeps its own runtime state using
-                        <code>EntityRuntimeData</code> (current HP, timers, stagger state, knockback counters, and so on),
-                        while <code>EntityData</code> remains immutable. This separation keeps the gameplay code safe:
-                        read-only static data on one side, dynamic battle values on the other.
+                        To solve this, I designed a single entity class capable of representing anything on the battlefield:
+                        <code>BattleEntity</code>. Player units and enemies are implemented as derived classes
+                        (<code>BattleUnit</code> and <code>BattleEnemy</code>), mainly to handle construction logic
+                        and small differences in their <code>update(float deltaTime)</code> behavior.
                     </p>
 
-                    <h3>Composition Over Inheritance</h3>
+                    <h3>A Single Source of Truth: EntityData</h3>
 
                     <p>
-                        Entity behavior is not determined through a giant inheritance tree.
-                        Instead, the Entity class delegates its logic to several small components:
+                        Every entity is built from an <code>EntityData</code> structure loaded from a JSON file.
+                        This structure contains all the static parameters that define an entity’s behavior: health,
+                        attack damage, movement speed, texture path, etc.
                     </p>
-
-                    <ul>
-                        <li><strong>Movement component</strong> for forward motion and knockback.</li>
-                        <li><strong>Combat component</strong> for attack timing, ranges, and damage application.</li>
-                        <li><strong>Animation controller</strong> handling sprite playback based on state.</li>
-                        <li><strong>State machine</strong> that coordinates the entity’s current behavior.</li>
-                    </ul>
 
                     <p>
-                        Each component reads only the data it needs from <code>EntityData</code> and operates independently.
-                        This makes it easier to modify or extend the gameplay without rewriting the whole system.
+                        This data never changes at runtime. Instead, each <code>BattleEntity</code> holds a reference
+                        to its corresponding <code>EntityData</code>, retrieved through a unique UID.
+                        As a result, all entities of the same type share the same immutable data, which reduces memory
+                        usage and keeps behavior consistent.
                     </p>
-
-                    <h3>Animation System</h3>
 
                     <p>
-                        Animations come directly from JSON as well: sprite sheets, frame counts, timing, offsets, and scaling.
-                        The animation controller blends this information with the state machine so the correct animation plays
-                        automatically whenever the entity changes behavior. Since animations are fully data-driven, adding a
-                        new unit or enemy is simply a matter of dropping its sprite sheet and writing its JSON entry.
+                        Dynamic values such as current health, magnification, or unit level are handled separately at
+                        runtime. This creates a clear separation between base stats and gameplay state, which made the
+                        system easier to reason about and safer to extend.
                     </p>
-
-                    <h3>Runtime Behavior</h3>
 
                     <p>
-                        Once on the battlefield, each entity updates every frame according to its state machine.
-                        Movement, attacking, taking hits, knockback, and dying all go through well-defined transitions.
-                        The gameplay layer sees entities only through a clean interface — move, attack, receive damage —
-                        which helps keep the Stage system simple.
+                        With this setup, adding a new unit or enemy only requires a new JSON entry.
+                        No additional C++ code is needed.
                     </p>
-
-                    <h3>Why this architecture scales</h3>
-
-                    <p>
-                        By centralizing all gameplay logic in one Entity class and letting JSON define variants,
-                        the system stays easy to maintain. Adding content never requires new C++ classes.
-                        Testing becomes faster because every unit is governed by the same rules, and balancing becomes
-                        largely a data-editing process. This architecture also makes it possible to integrate new mechanics
-                        or unit types by expanding the components instead of rewriting entire subsystems.
-                    </p>
-
                 </div>
             </details>
 
