@@ -359,7 +359,8 @@ code {
 
 .project-tech {
     font-size: 0.95rem;
-    opacity: 0.75;
+    font-weight: 600;
+    opacity: 0.85;
     margin-bottom: 12px;
 }
 
@@ -375,9 +376,11 @@ code {
 
 .project-link {
     font-size: 0.95rem;
+    font-weight: 600;
     opacity: 0.85;
     transition: opacity 0.2s ease;
 }
+
 
 .project-card:hover .project-link {
     opacity: 1;
