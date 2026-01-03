@@ -374,7 +374,7 @@ code {
     width: calc(100% - 20px);
     height: 1px;
     background-color: #333333;
-    margin: 12px 0;
+    margin: 12px auto;
     opacity: 0.8;
 }
 
