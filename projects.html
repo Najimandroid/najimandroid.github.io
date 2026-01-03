@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
     <nav>
         <a href="index.html">Home</a>
         <a href="projects.html" class="active">Projects</a>
@@ -15,26 +16,63 @@
 
     <main>
         <h1>Projects</h1>
-        <div class="project-list">
-            <a href="projects/project-fishfighters.html" class="project-card">
-                <img src="img/temp.png" alt="Fish Fighters thumbnail">
-                <div>
-                    <h3>Fish Fighters (C++)</h3>
-                    <p>2D fighting game prototype with a custom SFML-based engine.</p>
+
+        <section class="project-list">
+
+            <!-- ================= PROJECT : FISH FIGHTERS ================= -->
+            <a href="projects/project-fishfighters.html" class="project-card featured-project">
+                <div class="project-thumbnail">
+                    <img src="img/hacknescape_3.png" alt="Fish Fighters gameplay screenshot">
+                </div>
+
+                <div class="project-content">
+                    <h3>Fish Fighters</h3>
+
+                    <div class="project-tech">
+                        C++ · Custom Engine · SFML
+                    </div>
+
+                    <p class="project-description">
+                        2D C++ game built with a custom engine, focusing on clean architecture,
+                        data-driven systems, and in-engine debug tools.
+                    </p>
+
+                    <span class="project-link">
+                        Read more →
+                    </span>
                 </div>
             </a>
 
+            <!-- ================= PROJECT : UNITY ================= -->
             <a href="#" class="project-card">
-                <img src="img/temp.png" alt="Calendar App thumbnail">
-                <div>
-                    <h3>Gamified Calendar (Unity)</h3>
-                    <p>Mobile app prototype developed during my internship at Uni-Wave.</p>
+                <div class="project-thumbnail">
+                    <img src="img/hacknescape_2.png" alt="Unity project screenshot">
+                </div>
+
+                <div class="project-content">
+                    <h3>Gamified Calendar</h3>
+
+                    <div class="project-tech">
+                        Unity · C#
+                    </div>
+
+                    <p class="project-description">
+                        Mobile prototype developed during an internship, combining productivity
+                        mechanics with lightweight game systems.
+                    </p>
+
+                    <span class="project-link">
+                        Read more →
+                    </span>
                 </div>
             </a>
-        </div>
+
+        </section>
     </main>
+
     <footer>
         © Najim Bakkali 2026
     </footer>
+
 </body>
 </html>

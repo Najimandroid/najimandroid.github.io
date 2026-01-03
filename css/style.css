@@ -296,6 +296,93 @@ code {
     display: none;
 }
 
+/* ================================ */
+/*         PROJECT LIST             */
+/* ================================ */
+
+.project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+}
+
+/* ================================ */
+/*         PROJECT CARD             */
+/* ================================ */
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    background-color: #151515;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: white;
+}
+
+    .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+/* Featured project (Fish Fighters) */
+.featured-project {
+    border-color: #444444;
+}
+
+/* ================================ */
+/*         THUMBNAIL                */
+/* ================================ */
+
+.project-thumbnail img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+}
+
+/* ================================ */
+/*         CONTENT                  */
+/* ================================ */
+
+.project-content {
+    padding: 20px;
+}
+
+    .project-content h3 {
+        margin: 0 0 8px 0;
+        font-size: 1.4rem;
+    }
+
+.project-tech {
+    font-size: 0.95rem;
+    opacity: 0.75;
+    margin-bottom: 12px;
+}
+
+.project-description {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+/* ================================ */
+/*         LINK                     */
+/* ================================ */
+
+.project-link {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.project-card:hover .project-link {
+    opacity: 1;
+}
+
 
 /*
 .carousel-slide {
