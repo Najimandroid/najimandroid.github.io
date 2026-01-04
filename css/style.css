@@ -371,7 +371,7 @@ code {
 }
 
 .project-divider {
-    width: calc(100% - 20px);
+    width: calc(100% - 12px);
     height: 1px;
     background-color: #333333;
     margin: 12px auto;
