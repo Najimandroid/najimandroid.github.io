@@ -41,6 +41,17 @@ body::after {
     width: calc((100vw - var(--content-width)) / 2);
 }
 
+/* NAVBAR */
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 25px 0;
+    background-color: #151515;
+    border-bottom: 1px solid #333333;
+}
+
 /* Make sure navigation, footer, and everything important stays on top */
 header, footer, nav {
     position: relative;
