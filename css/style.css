@@ -406,3 +406,54 @@ code {
 #slide3:checked ~ .carousel-slides .slide3 {
     opacity: 1;
 }*/
+
+/* ================================ */
+/*           CONTACT PAGE           */
+/* ================================ */
+
+.contact-card {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #151515;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.contact-label {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.contact-item a {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.contact-divider {
+    height: 1px;
+    background-color: #333333;
+    margin: 20px 0;
+}
+
+a {
+    color: #ffcc66;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+    a:hover {
+        opacity: 0.7;
+    }
+
+    a:visited {
+        color: #ffcc66;
+    }
