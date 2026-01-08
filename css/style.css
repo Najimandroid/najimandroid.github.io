@@ -214,6 +214,11 @@ code {
     padding: 10px;
     user-select: none;
     display: none;
+    transition: opacity 0.2s ease;
+}
+
+.carousel-container:hover .carousel-arrow {
+    opacity: 0.85;
 }
 
 .left-arrow {
