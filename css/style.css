@@ -476,3 +476,13 @@ nav a {
         opacity: 1;
         border-bottom-color: #ffffff;
     }
+
+/* ================================ */
+/*           HOME BUTTON            */
+/* ================================ */
+
+.home-cta {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
