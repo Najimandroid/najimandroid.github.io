@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Fighters | Najim Bakkali</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="project-page">
+
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="../projects.html">Projects</a>
+        <a href="../links.html">My Links</a>
+    </nav>
+
+    <main>
+
+        <!-- ========================= -->
+        <!--        HEADER SECTION     -->
+        <!-- ========================= -->
+        <section class="project-header">
+
+            <h1 class="project-title">Fish Fighters</h1>
+            <p class="project-subtitle">C++ Personal Project</p>
+
+            <!-- IMAGE CAROUSEL -->
+            <div class="carousel-container">
+
+                <!-- Radio buttons -->
+                <input type="radio" name="slides" id="slide1" checked>
+                <input type="radio" name="slides" id="slide2">
+                <input type="radio" name="slides" id="slide3">
+
+                <!-- Slides -->
+                <div class="carousel-slides">
+
+                    <div class="carousel-slide">
+                        <img src="../img/hacknescape_1.png" alt="Fish Fighters Screenshot">
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="../img/hacknescape_2.png" alt="Fish Fighters Screenshot">
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="../img/hacknescape_3.png" alt="Fish Fighters Screenshot">
+                    </div>
+
+                </div>
+
+                <!-- Arrows for slide 1 -->
+                <label for="slide3" class="carousel-arrow left-arrow left1">&#10094;</label>
+                <label for="slide2" class="carousel-arrow right-arrow right1">&#10095;</label>
+
+                <!-- Arrows for slide 2 -->
+                <label for="slide1" class="carousel-arrow left-arrow left2">&#10094;</label>
+                <label for="slide3" class="carousel-arrow right-arrow right2">&#10095;</label>
+
+                <!-- Arrows for slide 3 -->
+                <label for="slide2" class="carousel-arrow left-arrow left3">&#10094;</label>
+                <label for="slide1" class="carousel-arrow right-arrow right3">&#10095;</label>
+
+            </div>
+
+
+            <div class="project-info-layout">
+
+                <!-- SIDEBAR TECH INFO -->
+                <aside class="project-sidebar">
+
+                    <h3>Platform:</h3>
+                    <p>Windows PC</p>
+
+                    <h3>Engine:</h3>
+                    <p>Custom C++ Engine (SFML)</p>
+
+                    <h3>Language:</h3>
+                    <p>C++20</p>
+
+                    <h3>Tools Used:</h3>
+                    <p>Visual Studio 2022, SFML 3.0, ImGui, CMake</p>
+
+                    <h3>Duration:</h3>
+                    <p>3 months (with breaks)</p>
+
+                    <h3>Team Size:</h3>
+                    <p>1</p>
+
+                    <h3>Role:</h3>
+                    <p>Gameplay Programmer, Tools Programmer, Systems Designer, Game artist</p>
+
+                </aside>
+
+                <!-- OVERVIEW -->
+                <section class="project-overview">
+
+                    <h2>Overview</h2>
+
+                    <p>
+                        Fish Fighters started as a personal challenge: could I build a game prototype in C++
+                        from scratch, without relying on an engine like Unity or Unreal?
+                        I wanted to deepen my understanding of project architecture; my objective was to produce clean code,
+                        modular systems, and easy-to-maintain data structures.
+                    </p>
+
+                    <p>
+                        For the game itself, I chose a horizontal tower defense genre heavily inspired by
+                        <em>The Battle Cats</em>. I've always enjoyed this genre of games: simple mechanics paired with real
+                        strategic depth. So I wanted to see if I could recreate that experience while focusing on solid architecture.
+                    </p>
+
+                    <p>
+                        Even though the game looks relatively simple on the surface, I invested a lot of time into designing each system.
+                        I analysed how <em>The Battle Cats</em> handled its entities, waves and progression and thought about
+                        ways to adapt those ideas into an architecture that made sense for a small C++ project.
+                        My technical choices are covered in detail in the Technical Breakdown section below.
+                    </p>
+
+                    <p>
+                        In the end, Fish Fighters became a great learning experience. I'm very proud of how the codebase turned out
+                        and it taught me a lot about building maintainable C++ projects from the ground up.
+                    </p>
+
+                    <h2>Project Goals</h2>
+
+                    <ul>
+                        <li>Build a complete small game entirely in C++.</li>
+                        <li>Design clean and modular systems.</li>
+                        <li>Use JSON files to format game data.</li>
+                        <li>Develop debugging tools to iterate on features more efficiently.</li>
+                    </ul>
+
+                    <h2>Links</h2>
+
+                    <a href="https://github.com/Najimandroid/Fish_Fighters"
+                       class="btn" target="_blank">
+                        View Source Code on GitHub
+                    </a>
+
+                </section>
+
+            </div>
+
+        </section>
+
+        <hr class="section-divider">
+
+
+        <!-- ========================= -->
+        <!--       VIDEO SECTION       -->
+        <!-- ========================= -->
+        <section class="project-video">
+
+            <h2>Project Showcase</h2>
+
+            <div class="video-wrapper">
+                <iframe width="100%" height="500"
+                        src="https://www.youtube.com/embed/OKkgqlkqQys"
+                        title="Fish Fighters Gameplay Video"
+                        frameborder="0"
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+        </section>
+
+        <hr class="section-divider">
+
+
+        <!-- ========================= -->
+        <!--      TECHNICAL SECTION    -->
+        <!-- ========================= -->
+        <section>
+
+            <h2>Technical Breakdown</h2>
+
+            <details class="technical-section">
+                <summary>Project Architecture</summary>
+                <div class="technical-content">
+
+                    <p>
+                        From the beginning, Fish Fighters was designed as more than just a playable prototype.
+                        The main objective was to build a clean and maintainable C++ project, where each system
+                        has a clear responsibility and interacts with others in a predictable way.
+                    </p>
+
+                    <p>
+                        Instead of relying on a game engine, the project is structured around small,
+                        well-defined systems: entities, stages, UI, player data, and rendering.
+                        Each of these systems owns its data and exposes only what is necessary to the rest of the game.
+                    </p>
+
+                    <p>
+                        A strong emphasis was placed on data-driven design. Most gameplay content
+                        (units, enemies, stages, progression) is defined through JSON files rather than hardcoded values.
+                        This keeps the C++ code focused on logic and behavior, while balancing and content iteration
+                        happen at the data level.
+                    </p>
+
+                    <p>
+                        The architecture also favors simplicity over over-engineering.
+                        Systems communicate directly when needed, without complex messaging layers or heavy abstractions.
+                        This keeps the codebase easy to read, debug, and extend — especially important for a solo project.
+                    </p>
+
+                    <p>
+                        Overall, the project architecture reflects my initial goal:
+                        learning how to structure a real C++ game project from scratch,
+                        while keeping the code modular, readable, and reusable for future projects.
+                    </p>
+
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>Game Entities</summary>
+                <div class="technical-content">
+
+                    <p>
+                        One of my main goals was to avoid having separate classes for enemies and player units.
+                        In practice, they behave almost identically during battle and share most of their parameters.
+                        Maintaining two distinct class hierarchies would have meant duplicating a lot of logic.
+                    </p>
+
+                    <p>
+                        To solve this, I designed a single entity class capable of representing anything on the battlefield:
+                        <code>BattleEntity</code>. Player units and enemies are implemented as derived classes
+                        (<code>BattleUnit</code> and <code>BattleEnemy</code>), mainly to handle construction logic
+                        and small differences in their <code>update(float deltaTime)</code> behavior.
+                    </p>
+
+                    <h3>A Single Source of Truth: EntityData</h3>
+
+                    <p>
+                        Every entity is built from an <code>EntityData</code> structure loaded from a JSON file.
+                        This structure contains all the static parameters that define an entity’s behavior: health,
+                        attack damage, movement speed, texture path, etc.
+                    </p>
+
+                    <p>
+                        This data never changes at runtime. Instead, each <code>BattleEntity</code> holds a reference
+                        to its corresponding <code>EntityData</code>, retrieved through a unique UID.
+                        As a result, all entities of the same type share the same immutable data, which reduces memory
+                        usage and keeps behavior consistent.
+                    </p>
+
+                    <p>
+                        Dynamic values such as current health, magnification, or unit level are handled separately at
+                        runtime. This creates a clear separation between base stats and gameplay stats, which made the
+                        system easier to reason about and safer to extend.
+                    </p>
+
+                    <p>
+                        With this setup, adding a new unit or enemy only requires a new JSON entry.
+                        No additional C++ code is needed.
+                    </p>
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>Entities’ State Machine</summary>
+                <div class="technical-content">
+
+                    <p>
+                        Each <code>BattleEntity</code> in the game is controlled by its own <code>StateMachine</code>.
+                        The entity itself does not contain any complex behaviour logic: it only holds a reference to
+                        its state machine and delegates updates to it. This keeps the <code>BattleEntity</code> class
+                        small and focused on data rather than decision-making.
+                    </p>
+
+                    <h3>Why a State Machine?</h3>
+
+                    <p>
+                        This system was not part of my initial design. At first, I tried to handle all behaviour
+                        directly inside <code>BattleEntity::update()</code> using a large <code>switch</code> statement.
+                        Very quickly, this approach became hard to read and difficult to maintain. The update function
+                        kept growing, transitions were unclear, and I had to rely on hacks (including <code>goto</code>)
+                        just to make certain behaviours work correctly.
+                    </p>
+
+                    <p>
+                        This direction clearly went against my original goal of writing clean and modular code.
+                        To fix this, I decided to extract all behaviour logic into a dedicated <code>StateMachine</code>
+                        class.
+                    </p>
+
+                    <h3>StateMachine Design</h3>
+
+                    <p>
+                        The <code>StateMachine</code> owns exactly one active state at a time through a
+                        <code>std::unique_ptr&lt;BaseState&gt;</code>. Each <code>BattleEntity</code> creates its own
+                        state machine, which means states are never shared between entities.
+                    </p>
+
+                    <p>
+                        The state machine also keeps weak references to its owner (<code>BattleEntity</code>) and
+                        the current <code>Stage</code>. These references are stored as <code>std::weak_ptr</code>
+                        because the state machine should never control their lifetime; it only needs access to them
+                        to query information or trigger transitions.
+                    </p>
+
+                    <p>
+                        Every frame, the entity simply calls:
+                    </p>
+
+                    <pre><code>stateMachine->update_state(deltaTime);</code></pre>
+
+                    <p>
+                        The state machine then forwards the update to the currently active state.
+                    </p>
+
+                    <h3>States and Lifecycle</h3>
+
+                    <p>
+                        All states inherit from a common base class called <code>BaseState</code>.
+                        Each state follows the same simple lifecycle:
+                    </p>
+
+                    <ul>
+                        <li><code>enter()</code>: called once when the state becomes active.</li>
+                        <li><code>perform(float deltaTime)</code>: called every frame while the state is active.</li>
+                        <li><code>exit()</code>: called once when the state is replaced.</li>
+                    </ul>
+
+                    <p>
+                        This strict lifecycle made behaviour transitions much easier to reason about.
+                        There is no ambiguity about when a state starts or ends, and no state can accidentally
+                        leak logic into another one.
+                    </p>
+
+                    <p>
+                        The game currently uses five states:
+                        <code>IdleState</code>, <code>WalkState</code>, <code>AttackState</code>, <code>KnockbackState</code>
+                        and <code>DeadState</code>.
+                        Each state is small and focused on a single responsibility.
+                    </p>
+
+                    <h3>Example: IdleState</h3>
+
+                    <p>
+                        <code>IdleState</code> is a good example of how states are used in practice.
+                        Its job is simply to wait and evaluate the current situation.
+                        During its <code>perform()</code> call, it checks for nearby enemies, attack cooldowns,
+                        health conditions, and decides what the next state should be.
+                    </p>
+
+                    <p>
+                        Depending on the context, <code>IdleState</code> can trigger transitions such as:
+                    </p>
+
+                    <ul>
+                        <li>Switch to <code>AttackState</code> if an enemy is in range.</li>
+                        <li>Switch to <code>WalkState</code> if no target is available.</li>
+                        <li>Switch to <code>KnockbackState</code> if the entity takes a strong hit.</li>
+                        <li>Switch to <code>DeadState</code> if health reaches zero.</li>
+                    </ul>
+
+                    <p>
+                        Because all transitions go through the state machine, the flow of behaviour stays
+                        explicit and easy to debug. At any moment, I can know exactly what an entity is doing
+                        just by checking its active state.
+                    </p>
+
+                    <h3>Why this approach worked better</h3>
+
+                    <p>
+                        Moving behaviour logic out of <code>BattleEntity</code> and into a state machine
+                        drastically improved code readability. The entity update function became short again,
+                        states became easy to test in isolation, and adding new behaviour no longer required
+                        touching existing logic.
+                    </p>
+
+                    <p>
+                        This system also fits well with the rest of the architecture.
+                        Since behaviour is driven by <code>EntityData</code>, the same states can be reused
+                        for both enemies and player units without special cases.
+                        Overall, this was one of the most important refactors of the project and had a big
+                        impact on code quality.
+                    </p>
+
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>Stages, Waves & Rewards</summary>
+                <div class="technical-content">
+
+                    <p>
+                        Levels in Fish Fighters are fully data-driven. In the same way that entities are defined
+                        by <code>EntityData</code>, each level is described by a <code>StageData</code> structure
+                        loaded from a JSON file. This structure acts as a blueprint for the entire stage.
+                    </p>
+
+                    <p>
+                        <code>StageData</code> defines all the static rules of a level: enemy and unit limits,
+                        base health, battlefield length, background visuals, enemy waves, and rewards.
+                        At runtime, the <code>Stage</code> class is initialized from this data and uses it
+                        to control the flow of the level without hardcoded values.
+                    </p>
+
+                    <h3>Loading a Stage</h3>
+
+                    <p>
+                        All <code>StageData</code> instances are loaded by the <code>DataLoader</code> and stored
+                        using a unique UID. When a level is selected, the <code>Stage</code> simply requests
+                        the corresponding data and initializes itself accordingly: bases are spawned,
+                        limits are set, visuals are loaded, and enemy wave data is copied for runtime use.
+                    </p>
+
+                    <p>
+                        This design keeps the <code>Stage</code> class generic. Adding a new level only requires
+                        creating a new JSON entry; no gameplay code needs to be modified.
+                    </p>
+
+                    <h3>Enemy Waves with EnemyStageData</h3>
+
+                    <p>
+                        Enemy waves are handled through <code>EnemyStageData</code>.
+                        Each instance represents a single enemy type spawning during the stage.
+                        You can think of it as a small enemy spawner with its own rules and internal state.
+                    </p>
+
+                    <p>
+                        An <code>EnemyStageData</code> defines:
+                    </p>
+
+                    <ul>
+                        <li>Which enemy to spawn (via its EntityData UID).</li>
+                        <li>When spawning starts and how often enemies respawn.</li>
+                        <li>How many enemies should spawn (or infinite spawning).</li>
+                        <li>Optional conditions such as base health thresholds.</li>
+                        <li>Magnification values for enemy health and attack.</li>
+                        <li>Special flags like generating a boss shockwave on spawn or bypassing enemy limits.</li>
+                    </ul>
+
+                    <p>
+                        During <code>Stage::update()</code>, the stage iterates over all
+                        <code>EnemyStageData</code> objects every frame.
+                        Each one keeps track of its own timers and counters
+                        (<code>currentTimer</code>, <code>spawnedCount</code>, <code>hasStarted</code>).
+                    </p>
+
+                    <p>
+                        If all conditions are met — time elapsed, base health threshold reached,
+                        respawn timer ready, and spawn amount not exceeded — the stage spawns
+                        a new <code>BattleEnemy</code>.
+                        Because each wave manages its own runtime state, multiple waves can run
+                        simultaneously without complex control logic.
+                    </p>
+
+                    <p>
+                        This approach allows for unique level creation:
+                        early pressure, delayed enemies, infinite spawns, or late-stage bosses
+                        can all be created purely through data.
+                    </p>
+
+                    <h3>Rewards System</h3>
+
+                    <p>
+                        Each stage also defines a list of <code>RewardData</code>.
+                        These rewards are granted to the player when the enemy base is destroyed.
+                        A stage can give currency, unlock new units, or both.
+                    </p>
+
+                    <p>
+                        <code>RewardData</code> is intentionally simple.
+                        It only specifies the reward type and the associated value
+                        (amount of currency or unit UID).
+                        The <code>Stage</code> is responsible for detecting victory and
+                        passing these rewards to the player progression system.
+                    </p>
+
+                    <p>
+                        This keeps rewards flexible and easy to extend while avoiding any
+                        coupling between level logic and player data management.
+                        More details about how rewards are applied can be found in the next section.
+                    </p>
+
+                    <h3>Why this design works</h3>
+
+                    <p>
+                        By separating stage logic from stage data, level design becomes fast and safe.
+                        Enemy pacing, difficulty, and rewards can be adjusted by editing JSON files
+                        instead of recompiling the project.
+                    </p>
+
+                    <p>
+                        The <code>Stage</code> class remains a runtime orchestrator:
+                        it updates timers, checks conditions, spawns entities, and manages the battlefield.
+                        All decisions come from data, which keeps the codebase clean, modular,
+                        and aligned with the project’s original goals.
+                    </p>
+
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>Player Data & Progression</summary>
+                <div class="technical-content">
+
+                    <p>
+                        All player-related information is centralized in a single class called
+                        <code>PlayerData</code>. This class is responsible for storing everything
+                        that should persist between play sessions: owned units, upgrades,
+                        equipped units, currency, and overall progression.
+                    </p>
+
+                    <p>
+                        The goal was to have one clear source of truth for the player state,
+                        instead of spreading this logic across UI, gameplay, and menu systems.
+                        Any system that needs player information goes through <code>PlayerData</code>.
+                    </p>
+
+                    <h3>Units Management</h3>
+
+                    <p>
+                        <code>PlayerData</code> keeps track of all owned units using their UID.
+                        For each unit, it stores the current level and the active form.
+                        Units can also be equipped into one of ten slots, which directly
+                        defines what the player can deploy during a stage.
+                    </p>
+
+                    <p>
+                        Some units are unlocked as stage rewards but are not immediately usable.
+                        When this happens, the unit is added to a "waiting to be unlocked" list:
+                        the player has discovered the unit, but still needs to purchase it in the shop
+                        before being able to deploy it.
+                    </p>
+
+                    <p>
+                        This creates a clean separation between unlocking a unit through progression
+                        and actually obtaining it through gameplay economy, without introducing
+                        special-case logic in the unit or reward systems.
+                    </p>
+
+                    <h3>Currency</h3>
+
+                    <p>
+                        The game uses a single currency: shells.
+                        <code>PlayerData</code> handles all shell gains and spending,
+                        ensuring that currency logic stays centralized and consistent.
+                        This also makes it easy to add costs for upgrades, units, or future features.
+                    </p>
+
+                    <h3>Progression Tracking</h3>
+
+                    <p>
+                        Player progression is tracked through completed stages and chapters.
+                        When a stage is completed, <code>PlayerData</code> marks it as cleared
+                        and applies the rewards defined in the corresponding <code>StageData</code>.
+                    </p>
+
+                    <p>
+                        Chapters are handled in a similar way: entering a chapter updates
+                        the current chapter state, and completing all required stages marks
+                        the chapter as completed. This data is later used by the world map UI
+                        to determine what content is available.
+                    </p>
+
+                    <h3>Saving and Loading</h3>
+
+                    <p>
+                        All player data is serialized into a <code>player.json</code> file.
+                        The <code>DataLoader</code> loads this file when the game starts and
+                        writes it back to disk when the game closes.
+                    </p>
+
+                    <p>
+                        This allows the player to keep their progression, unlocked units,
+                        and currency even after quitting the game. I intentionally did not
+                        add any encryption or encoding layer: for a small personal project,
+                        readability and simplicity were more important than data protection.
+                    </p>
+
+                    <h3>Why this design works</h3>
+
+                    <p>
+                        Keeping all player-related data in a dedicated class makes the system
+                        easy to reason about and easy to extend. Adding a new progression feature
+                        usually means extending <code>PlayerData</code>, without touching gameplay
+                        or rendering code.
+                    </p>
+
+                    <p>
+                        Combined with the data-driven stage and entity systems, this approach
+                        results in a clean separation between gameplay logic and persistent data,
+                        which fits well with the overall architecture of the project.
+                    </p>
+
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>UI System</summary>
+                <div class="technical-content">
+
+                    <p>
+                        The UI system was built entirely from scratch with one main objective: stay simple while being flexible enough
+                        to cover every screen in the game. Even though the visuals are relatively minimal, I wanted a system that
+                        would be easy to extend, easy to reuse, and quick to work with.
+                    </p>
+
+                    <h4>Overall Architecture</h4>
+
+                    <p>
+                        The system is centered around a single <code>UIManager</code> that owns and updates all active UI elements.
+                        Its role is to:
+                    </p>
+
+                    <p>
+                        • Create and destroy UI layouts depending on the current screen<br>
+                        • Update and render every UI element<br>
+                        • Forward input events to the relevant widgets<br>
+                        • Act as the bridge between UI and game systems
+                    </p>
+
+                    <p>
+                        Each menu or screen (fish tank, upgrades, equip menu, battle HUD, victory/defeat screens) is generated
+                        through a dedicated <code>generate_...()</code> function. Switching menus simply means clearing the current
+                        elements and creating a new layout.
+                    </p>
+
+                    <h4>UIElement Base Class</h4>
+
+                    <p>
+                        All UI widgets inherit from a common base class called <code>UIElement</code>. This class defines the shared
+                        behavior every widget needs:
+                    </p>
+
+                    <p>
+                        • Position and size<br>
+                        • Visibility<br>
+                        • Update and render methods<br>
+                        • Optional input handling<br>
+                        • Screen-space or world-space rendering
+                    </p>
+
+                    <p>
+                        This keeps the UIManager completely agnostic of widget types. It simply updates, renders, and dispatches
+                        events to whatever elements are currently active.
+                    </p>
+
+                    <h4>Reusable Widget Building Blocks</h4>
+
+                    <p>
+                        To avoid rewriting the same logic over and over, I created a small set of reusable widget types derived
+                        from <code>UIElement</code>:
+                    </p>
+
+                    <p>
+                        • <strong>UIButtonElement</strong>: handles mouse interaction and click callbacks<br>
+                        • <strong>UITextElement</strong>: displays dynamic text values<br>
+                        • <strong>UITextureElement</strong>: renders images and icons
+                    </p>
+
+                    <p>
+                        These classes encapsulate common behavior such as click detection, text centering, or texture scaling.
+                        More specific widgets can then be created by composition or inheritance without reimplementing logic.
+                    </p>
+
+                    <p>
+                        For example, creating a new button never requires rewriting input detection. I only need to instantiate
+                        a <code>UIButtonElement</code>, configure its visuals, and attach a callback.
+                    </p>
+
+                    <h4>Input Handling</h4>
+
+                    <p>
+                        Input events are forwarded by the UIManager to all active UI elements. Each widget decides whether it
+                        cares about the event or not.
+                    </p>
+
+                    <p>
+                        This keeps the input system simple and avoids complex propagation rules. Widgets that do not require
+                        interaction simply ignore events, while buttons or interactive elements react only to relevant inputs.
+                    </p>
+
+                    <h4>World-space & Screen-space UI</h4>
+
+                    <p>
+                        The system supports both screen-space UI (menus, HUD) and world-space UI (elements attached to the game
+                        world, such as base health indicators).
+                    </p>
+
+                    <p>
+                        This is handled through a simple flag on each <code>UIElement</code>. During rendering, the UIManager
+                        switches between the UI camera and the world camera accordingly.
+                    </p>
+
+                    <h4>Why This System Worked Well</h4>
+
+                    <p>
+                        The final result is a modular and efficient UI framework that was easy to work with throughout development.
+                        Creating a new menu usually meant adding a single <code>generate_...()</code> function and assembling widgets
+                        like building blocks.
+                    </p>
+
+                    <p>
+                        I was able to reuse this exact system during a game jam. In less than an hour, I had a fully functional UI
+                        for a new SFML project, which confirmed that the design was not tied to this game specifically.
+                    </p>
+
+                    <p>
+                        Building this UI system from scratch helped me understand the trade-offs behind engine UI frameworks and
+                        showed me that, for small projects, a simple and well-structured solution is often more productive than
+                        a heavy abstraction layer.
+                    </p>
+
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>Debug Tools</summary>
+                <div class="technical-content">
+
+                    <p>
+                        To help with development and iteration, I integrated a small set of debug tools using
+                        <strong>ImGui</strong>. These tools are strictly available in <strong>Debug mode</strong>
+                        and are completely disabled in Release builds, meaning the game can be played normally
+                        without any debug interface.
+                    </p>
+
+                    <p>
+                        The goal was not to build a full editor, but rather a practical set of utilities that
+                        allow testing gameplay systems quickly without modifying code or restarting the game.
+                    </p>
+
+                    <h4>Current Features</h4>
+
+                    <p>
+                        At the moment, the debug UI provides:
+                    </p>
+
+                    <p>
+                        • Real-time performance information (FPS, delta time)<br>
+                        • Game pause and frame-by-frame stepping<br>
+                        • Quick level loading by stage ID<br>
+                        • Live modification of player data (such as granting currency)<br>
+                        • Manual spawning of units and enemies with configurable parameters
+                    </p>
+
+                    <p>
+                        Enemy spawning tools allow adjusting magnification values (HP and attack),
+                        forcing layers, bypassing enemy limits, and spawning boss variants.
+                        This makes it possible to stress-test combat scenarios instantly.
+                    </p>
+
+                    <h4>Debug-Only by Design</h4>
+
+                    <p>
+                        The entire system is wrapped behind a compile-time flag (<code>DEBUG_MODE</code>).
+                        This keeps debug code isolated from production logic and ensures there is no runtime
+                        overhead or accidental exposure in the final build.
+                    </p>
+
+                    <h4>Why This Matters</h4>
+
+                    <p>
+                        Having these tools dramatically speeds up iteration. Features can be tested in isolation,
+                        edge cases can be reproduced easily, and balance tweaks can be evaluated without
+                        awkward code hacks or temporary logic.
+                    </p>
+
+                    <p>
+                        Although the debug system is still evolving, it already proved invaluable during development.
+                        More tools will be added over time as new systems require inspection or control, but even in its
+                        current state, it plays a key role in maintaining a fast and comfortable development workflow.
+                    </p>
+
+                </div>
+            </details>
+
+            <details class="technical-section">
+                <summary>What I Learned</summary>
+                <div class="technical-content">
+
+                    <p>
+                        This project taught me far more than just how to make a game.
+                        While I had already worked on fairly ambitious school projects,
+                        this was the first time I tackled a project of this scale entirely on my own.
+                        Designing, implementing, and maintaining every system myself
+                        gave me a much deeper understanding of how a complete C++ codebase comes together.
+                    </p>
+
+                    <p>
+                        One of the biggest lessons was project architecture.
+                        I learned how important clear responsibilities, modular systems,
+                        and consistent design choices are when a codebase starts to grow.
+                        Many problems I encountered were not gameplay issues, but structural ones,
+                        and solving them pushed me to rethink how I organized my code.
+                    </p>
+
+                    <p>
+                        I also learned how to store and manage game data properly.
+                        Using JSON files for units, stages, and player progression helped me separate
+                        data from logic and made iteration much faster and cleaner.
+                        This approach completely changed how I think about scalability and maintainability.
+                    </p>
+
+                    <p>
+                        From a C++ perspective, this project was an excellent training ground.
+                        Working with smart pointers, ownership rules, and system boundaries
+                        made me much more aware of memory management and design trade-offs.
+                        I can clearly feel a difference in technical maturity between the start
+                        and the end of the project.
+                    </p>
+
+                    <p>
+                        The code is not perfect, and it was never meant to be.
+                        What matters most is that it represents a solid learning experience
+                        and a strong foundation for future projects.
+                        I am genuinely proud of the result and feel ready to take on
+                        more ambitious challenges moving forward.
+                    </p>
+
+                </div>
+            </details>
+
+        </section>
+
+    </main>
+
+    <footer>
+        © Najim Bakkali 2026
+    </footer>
+
+</body>
+</html>
