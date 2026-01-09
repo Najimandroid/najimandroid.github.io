@@ -304,7 +304,7 @@ code {
 .technical-content a {
     color: #e6e6e6;
     text-decoration: underline;
-    text-decoration-color: rgba(230, 230, 230, 0.4);
+    text-decoration-color: rgba(186, 210, 255, 0.4);
     transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
