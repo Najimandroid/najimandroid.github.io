@@ -77,22 +77,22 @@
                     <p>Windows PC</p>
 
                     <h3>Engine:</h3>
-                    <p>Custom C++ Engine (SFML)</p>
+                    <p>Unity 6.0</p>
 
                     <h3>Language:</h3>
-                    <p>C++20</p>
+                    <p>C#</p>
 
                     <h3>Tools Used:</h3>
-                    <p>Visual Studio 2022, SFML 3.0, ImGui, CMake</p>
+                    <p>Unity, Visual Studio 2022</p>
 
                     <h3>Duration:</h3>
-                    <p>3 months (with breaks)</p>
+                    <p>Between 1-2 weeks for each game</p>
 
                     <h3>Team Size:</h3>
                     <p>1</p>
 
                     <h3>Role:</h3>
-                    <p>Gameplay Programmer, Tools Programmer, Systems Designer, Game artist</p>
+                    <p>Gameplay Programmer, Systems Designer </p>
 
                 </aside>
 
@@ -101,45 +101,59 @@
 
                     <h2>Overview</h2>
 
+                    <h2>Overview</h2>
+
                     <p>
-                        Fish Fighters started as a personal challenge: could I build a game prototype in C++
-                        from scratch, without relying on an engine like Unity or Unreal?
-                        I wanted to deepen my understanding of project architecture; my objective was to produce clean code,
-                        modular systems, and easy-to-maintain data structures.
+                        During a two-month internship last summer, I worked on several Unity projects aimed at learning
+                        the fundamentals of the engine while building my first game-focused portfolio.
+                        Each project was designed as a short prototype with a specific learning objective rather than
+                        as a fully polished game.
                     </p>
 
                     <p>
-                        For the game itself, I chose a horizontal tower defense genre heavily inspired by
-                        <em>The Battle Cats</em>. I've always enjoyed this genre of games: simple mechanics paired with real
-                        strategic depth. So I wanted to see if I could recreate that experience while focusing on solid architecture.
+                        Over the course of the internship, I developed four solo prototypes in the following order:
+                        a Pachinko game, a gardening game, a stealth game, and a photography game.
+                        Each project introduced new Unity concepts and helped me progressively become more comfortable
+                        with the engine, its workflow, and its tools.
                     </p>
 
                     <p>
-                        Even though the game looks relatively simple on the surface, I invested a lot of time into designing each system.
-                        I analysed how <em>The Battle Cats</em> handled its entities, waves and progression and thought about
-                        ways to adapt those ideas into an architecture that made sense for a small C++ project.
-                        My technical choices are covered in detail in the Technical Breakdown section below.
+                        <em>Untitled Pachinko Game</em> was my very first Unity project. Its main purpose was to familiarize me
+                        with Unityâ€™s 3D tools, basic animations, and particle systems.
+                        It served as an introduction to scene construction, simple interactions, and visual feedback.
                     </p>
 
                     <p>
-                        In the end, Fish Fighters became a great learning experience. I'm very proud of how the codebase turned out
-                        and it taught me a lot about building maintainable C++ projects from the ground up.
+                        <em>Hack â€™n Escape</em> is a small stealth prototype where I focused on gameplay logic and AI behaviour.
+                        Through this project, I learned how to implement simple enemy states, detection logic, and player feedback
+                        using Unityâ€™s scripting system.
                     </p>
 
-                    <h2>Project Goals</h2>
+                    <p>
+                        While these projects are relatively small in scope, they represent an important learning phase.
+                        More detailed explanations of the technical and design choices can be found in the Technical Breakdown
+                        section below.
+                    </p>
+
+                    <h2>Projects Goals</h2>
 
                     <ul>
-                        <li>Build a complete small game entirely in C++.</li>
-                        <li>Design clean and modular systems.</li>
-                        <li>Use JSON files to format game data.</li>
-                        <li>Develop debugging tools to iterate on features more efficiently.</li>
+                        <li>Learn the core concepts and workflows of Unity.</li>
+                        <li>Produce playable prototypes within a limited time frame.</li>
+                        <li>Experiment with different genres and gameplay systems.</li>
+                        <li>Build a first Unity portfolio by publishing projects on itch.io.</li>
                     </ul>
 
                     <h2>Links</h2>
 
-                    <a href="https://github.com/Najimandroid/Fish_Fighters"
+                    <a href="https://najimandroid.itch.io/untitled-pachinko-game"
                        class="btn" target="_blank">
-                        View Source Code on GitHub
+                        Untitled Pachinko Game on itch.io
+                    </a>
+
+                    <a href="https://najimandroid.itch.io/hack-n-escape"
+                       class="btn" target="_blank">
+                        Hack 'n Escape on itch.io
                     </a>
 
                 </section>
@@ -205,7 +219,7 @@
                     <p>
                         The architecture also favors simplicity over over-engineering.
                         Systems communicate directly when needed, without complex messaging layers or heavy abstractions.
-                        This keeps the codebase easy to read, debug, and extend — especially important for a solo project.
+                        This keeps the codebase easy to read, debug, and extend ï¿½ especially important for a solo project.
                     </p>
 
                     <p>
@@ -238,7 +252,7 @@
 
                     <p>
                         Every entity is built from an <code>EntityData</code> structure loaded from a JSON file.
-                        This structure contains all the static parameters that define an entity’s behavior: health,
+                        This structure contains all the static parameters that define an entityï¿½s behavior: health,
                         attack damage, movement speed, texture path, etc.
                     </p>
 
@@ -263,7 +277,7 @@
             </details>
 
             <details class="technical-section">
-                <summary>Entities’ State Machine</summary>
+                <summary>Entitiesï¿½ State Machine</summary>
                 <div class="technical-content">
 
                     <p>
@@ -446,8 +460,8 @@
                     </p>
 
                     <p>
-                        If all conditions are met — time elapsed, base health threshold reached,
-                        respawn timer ready, and spawn amount not exceeded — the stage spawns
+                        If all conditions are met ï¿½ time elapsed, base health threshold reached,
+                        respawn timer ready, and spawn amount not exceeded ï¿½ the stage spawns
                         a new <code>BattleEnemy</code>.
                         Because each wave manages its own runtime state, multiple waves can run
                         simultaneously without complex control logic.
@@ -493,7 +507,7 @@
                         The <code>Stage</code> class remains a runtime orchestrator:
                         it updates timers, checks conditions, spawns entities, and manages the battlefield.
                         All decisions come from data, which keeps the codebase clean, modular,
-                        and aligned with the project’s original goals.
+                        and aligned with the projectï¿½s original goals.
                     </p>
 
                 </div>
@@ -613,10 +627,10 @@
                     </p>
 
                     <p>
-                        • Create and destroy UI layouts depending on the current screen<br>
-                        • Update and render every UI element<br>
-                        • Forward input events to the relevant widgets<br>
-                        • Act as the bridge between UI and game systems
+                        ï¿½ Create and destroy UI layouts depending on the current screen<br>
+                        ï¿½ Update and render every UI element<br>
+                        ï¿½ Forward input events to the relevant widgets<br>
+                        ï¿½ Act as the bridge between UI and game systems
                     </p>
 
                     <p>
@@ -633,11 +647,11 @@
                     </p>
 
                     <p>
-                        • Position and size<br>
-                        • Visibility<br>
-                        • Update and render methods<br>
-                        • Optional input handling<br>
-                        • Screen-space or world-space rendering
+                        ï¿½ Position and size<br>
+                        ï¿½ Visibility<br>
+                        ï¿½ Update and render methods<br>
+                        ï¿½ Optional input handling<br>
+                        ï¿½ Screen-space or world-space rendering
                     </p>
 
                     <p>
@@ -653,9 +667,9 @@
                     </p>
 
                     <p>
-                        • <strong>UIButtonElement</strong>: handles mouse interaction and click callbacks<br>
-                        • <strong>UITextElement</strong>: displays dynamic text values<br>
-                        • <strong>UITextureElement</strong>: renders images and icons
+                        ï¿½ <strong>UIButtonElement</strong>: handles mouse interaction and click callbacks<br>
+                        ï¿½ <strong>UITextElement</strong>: displays dynamic text values<br>
+                        ï¿½ <strong>UITextureElement</strong>: renders images and icons
                     </p>
 
                     <p>
@@ -737,11 +751,11 @@
                     </p>
 
                     <p>
-                        • Real-time performance information (FPS, delta time)<br>
-                        • Game pause and frame-by-frame stepping<br>
-                        • Quick level loading by stage ID<br>
-                        • Live modification of player data (such as granting currency)<br>
-                        • Manual spawning of units and enemies with configurable parameters
+                        ï¿½ Real-time performance information (FPS, delta time)<br>
+                        ï¿½ Game pause and frame-by-frame stepping<br>
+                        ï¿½ Quick level loading by stage ID<br>
+                        ï¿½ Live modification of player data (such as granting currency)<br>
+                        ï¿½ Manual spawning of units and enemies with configurable parameters
                     </p>
 
                     <p>
@@ -826,7 +840,7 @@
     </main>
 
     <footer>
-        © Najim Bakkali 2026
+        ï¿½ Najim Bakkali 2026
     </footer>
 
 </body>
