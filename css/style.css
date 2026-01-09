@@ -300,6 +300,19 @@ code {
     display: none;
 }
 
+/* Links inside technical content */
+.technical-content a {
+    color: #e6e6e6;
+    text-decoration: underline;
+    text-decoration-color: rgba(230, 230, 230, 0.4);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+    .technical-content a:hover {
+        color: #ffffff;
+        text-decoration-color: #ffffff;
+    }
+
 /* ================================ */
 /*         PROJECT LIST             */
 /* ================================ */
