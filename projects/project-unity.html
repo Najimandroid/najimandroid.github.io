@@ -195,15 +195,24 @@
                 <div class="technical-content">
 
                     <p>
-                        For my Unity projects, I like to separate gameplay logic into multiple small and focused systems.
-                        These systems are usually organized as prefabs inside dedicated project folders.
+                        Both Unity projects were built with a strong focus on clarity and modularity.
+                        Even though they are relatively small prototypes, I made a conscious effort to
+                        separate responsibilities and avoid tightly coupled scripts.
                     </p>
 
                     <p>
-                        For example, I implemented a <code>ScoreManager</code> system in both projects, but with different responsibilities.
-                        In the Pachinko game, it manages the player score.
-                        In Hack ’n Escape, it counts how many computers have been hacked in order to unlock the final door.
+                        Gameplay logic is organized into small, self-contained systems, usually implemented
+                        as prefabs placed in dedicated folders.
                     </p>
+
+                    <p>
+                        For example, I implemented a <code>ScoreManager</code> system in both projects, but with different responsibilities:
+                    </p>
+
+                    <ul>
+                        <li>In the Pachinko game, it manages the player score.</li>
+                        <li>In Hack ’n Escape, it counts how many computers have been hacked in order to unlock the final door.</li>
+                    </ul>
 
                     <p>
                         Organizing logic this way allows me to keep a clear architecture and avoid overly complex prefabs.
@@ -218,12 +227,21 @@
                 <div class="technical-content">
 
                     <p>
-                        For player controls, I made sure to use Unity’s new Input System and not the legacy Input Manager.
+                        For player controls, I exclusively used Unity’s new Input System, rather than the legacy Input Manager.
                     </p>
 
                     <p>
-                        This approach allows me to easily add support for new input devices and control schemes
-                        without rewriting gameplay code, while keeping all input logic centralized and scalable.
+                        This allowed me to:
+                    </p>
+
+                    <ul>
+                        <li>Define actions independently from specific input devices.</li>
+                        <li>Easily support multiple control schemes.</li>
+                    </ul>
+
+                    <p>
+                        Using the new Input System made it much easier to adapt controls without touching gameplay code,
+                        and it aligns better with modern Unity workflows and scalability.
                     </p>
 
                 </div>
@@ -234,15 +252,27 @@
                 <div class="technical-content">
 
                     <p>
-                        I used Unity’s animation system to bring life to various gameplay elements.
-                        In the Pachinko game, several obstacles are animated to move dynamically,
-                        preventing players from repeating the same action every time.
+                        Unity’s animation system played an important role in both projects, especially for visual clarity and feedback.
                     </p>
 
                     <p>
-                        I also used Unity’s particle system to create clear visual feedback.
-                        When the player successfully lands a ball in the center compartment,
-                        confetti particles spawn along with a sound effect to reinforce the success.
+                        In the Pachinko game, animations are used to move obstacles dynamically.
+                        This prevents players from repeating the same action every time and adds a
+                        layer of unpredictability to an otherwise simple mechanic.
+                    </p>
+
+                    <p>
+                        I also used Unity’s Particle System to reinforce success states:
+                    </p>
+
+                    <ul>
+                        <li>Confetti particles spawn when the player scores by landing a ball in the central compartment.</li>
+                        <li>These visual effects are paired with sound effects to make success immediately readable and satisfying.</li>
+                    </ul>
+
+                    <p>
+                        Even though the mechanics are simple, these feedback elements significantly improve
+                        the overall feel of the game.
                     </p>
 
                 </div>
@@ -253,31 +283,52 @@
                 <div class="technical-content">
 
                     <p>
-                        For Hack ’n Escape, I implemented a modular state machine to control the monster’s behavior.
-                        Each state follows a simple lifecycle with <code>enter()</code>, <code>perform()</code>, and <code>exit()</code>.
+                        Hack ’n Escape was my infiltration-focused prototype and the most technically involved Unity project.
                     </p>
 
                     <p>
-                        This system worked so well that I later reused the same concept when building the state machine
-                        for my C++ project Fish Fighters.
+                        The enemy behavior is built around a modular state machine, designed to stay simple while remaining flexible.
+                        Each state follows a clear lifecycle:
+                    </p>
+
+                    <ul>
+                        <li><code>enter()</code></li>
+                        <li><code>perform()</code></li>
+                        <li><code>exit()</code></li>
+                    </ul>
+
+                    <p>
+                        This approach worked so well that I later reused and expanded this exact concept in my C++ project
+                        Fish Fighters, adapting it to a different technical context.
+                    </p>
+
+                    <h3>Navigation & Perception</h3>
+
+                    <p>
+                        The monster uses:
+                    </p>
+
+                    <ul>
+                        <li>NavMesh for navigation and pathfinding.</li>
+                        <li>Raycasts combined with a cone-based vision check to detect the player.</li>
+                    </ul>
+
+                    <p>
+                        When the player enters the monster’s field of view, it switches to a chase state.
+                        If the player escapes its vision, the monster does not immediately give up:
+                        it moves to the last known player position, searches the area for a short time,
+                        and only then returns to its patrol state.
                     </p>
 
                     <p>
-                        The monster uses Unity’s NavMesh to navigate the level and locate the player.
-                        It also relies on raycasts and a cone-based vision system to detect whether the player
-                        is in front of it.
+                        This behavior creates a more believable and “intelligent” enemy without complex algorithms.
                     </p>
 
-                    <p>
-                        If the player is detected, the monster starts chasing them.
-                        If the player escapes its vision, the monster moves to the last known player position,
-                        searches the area for a short time, and then returns to its patrol state.
-                        This behavior helps make the monster feel more intelligent and believable.
-                    </p>
+                    <h3>Sound Awareness & Alert State</h3>
 
                     <p>
-                        The monster also has a sense of hearing.
-                        Opening large doors generates noise that attracts it, triggering an alert state
+                        The monster also reacts to sound events.
+                        Opening large doors generates noise that attracts the monster, triggering an alert state
                         where it moves toward the source of the sound.
                     </p>
 
@@ -286,88 +337,102 @@
                         <a href="https://www.youtube.com/watch?v=UuHNmVPDauc" target="_blank" rel="noopener noreferrer">
                             AI algorithm
                         </a>
-                        I previously implemented for a school project.
+                        I previously implemented for a school project, which helped me translate theoretical concepts
+                        into a practical Unity implementation.
+                    </p>
+
+                    <h3>Audio & Atmosphere</h3>
+
+                    <p>
+                        Audio feedback was used extensively to reinforce gameplay states, especially in Hack ’n Escape.
                     </p>
 
                     <p>
-                        Hack ’n Escape was heavily inspired by the Roblox game <em>Flee the Facility</em>,
-                        where players must hack computers to escape while being hunted by another player.
-                        Similarly, hacking all computers unlocks a final exit door.
+                        When the monster detects the player:
                     </p>
 
-                </div>
-            </details>
-
-            <details class="technical-section">
-                <summary>Audio Feedback & Atmosphere</summary>
-                <div class="technical-content">
-
-                    <p>
-                        Audio plays an important role in both projects, especially in Hack ’n Escape.
-                    </p>
+                    <ul>
+                        <li>It emits a loud scream.</li>
+                        <li>An intense background track starts playing.</li>
+                        <li>A heartbeat sound increases in volume as the monster gets closer.</li>
+                    </ul>
 
                     <p>
-                        When the monster detects the player, it lets out a loud scream and an intense
-                        background track starts playing.
-                        A heartbeat sound also becomes louder as the monster gets closer to the player.
+                        These layered audio cues create a strong sense of tension, even though the gameplay systems
+                        themselves remain relatively simple.
                     </p>
 
                     <p>
-                        These audio cues help create a tense atmosphere even though the game itself
-                        remains relatively simple in terms of mechanics.
+                        In the Pachinko game, audio is handled by a separate sound system, which made it easy to later
+                        add a settings menu allowing the player to adjust volume levels without modifying gameplay logic.
+                    </p>
+
+                    <h3>Game Flow & Reset Logic</h3>
+
+                    <p>
+                        Special care was taken to ensure that both games reset properly after a win or a loss.
+                        All relevant systems are reinitialized so the player can replay indefinitely without restarting
+                        the application.
                     </p>
 
                     <p>
-                        In the Pachinko game, sound and music are handled by a separate system.
-                        Thanks to this separation, I was able to easily add a settings menu
-                        to control volume without affecting gameplay logic.
+                        This includes resetting:
                     </p>
 
-                </div>
-            </details>
-
-            <details class="technical-section">
-                <summary>Game Flow & Replayability</summary>
-                <div class="technical-content">
+                    <ul>
+                        <li>Scores and progression</li>
+                        <li>Enemy states</li>
+                        <li>Player position and input state</li>
+                    </ul>
 
                     <p>
-                        I made sure that both games reset properly when the player wins or loses.
-                        This allows the player to replay the games indefinitely without restarting the application.
+                        This attention to game flow helped avoid soft locks and made the prototypes feel more complete
+                        and polished.
                     </p>
 
+                    <h3>Scope & Production Context</h3>
+
                     <p>
-                        All relevant systems are reinitialized correctly, ensuring consistent behavior
-                        across multiple playthroughs.
+                        The two showcased Unity projects were developed under different time constraints:
                     </p>
 
-                </div>
-            </details>
-
-            <details class="technical-section">
-                <summary>What I Learned</summary>
-                <div class="technical-content">
+                    <ul>
+                        <li>Untitled Pachinko Game was completed in under one week.</li>
+                        <li>Hack ’n Escape took approximately two weeks and involved more complex systems.</li>
+                    </ul>
 
                     <p>
-                        These Unity projects taught me a lot about both technical implementation
-                        and game design.
+                        Both projects were developed solo during a two-month internship, with the main goal of learning
+                        Unity fundamentals while building a presentable portfolio.
                     </p>
 
                     <p>
-                        Hack ’n Escape took around two weeks to complete and involved more complex systems,
-                        while the Pachinko game was developed in less than a week and focused on simple but polished mechanics.
+                        Two additional prototypes (a gardening game and a photography game) were also created during
+                        this period but remained at an early prototype stage and are not showcased here.
+                    </p>
+
+                    <h3>What I Learned Working with Unity</h3>
+
+                    <p>
+                        Working on these projects helped me build a solid foundation in Unity development:
+                    </p>
+
+                    <ul>
+                        <li>Structuring projects for clarity and scalability.</li>
+                        <li>Designing simple but effective gameplay systems.</li>
+                        <li>Using Unity tools (Input System, NavMesh, animation, particles) appropriately.</li>
+                        <li>Understanding how feedback, sound, and game feel impact player experience.</li>
+                    </ul>
+
+                    <p>
+                        Beyond the technical side, these projects taught me a lot about game design and iteration.
+                        I particularly enjoyed balancing simplicity and polish, and learning how small details can
+                        dramatically improve player perception.
                     </p>
 
                     <p>
-                        Working on these projects helped me better understand Unity’s core systems,
-                        project organization, player feedback, and how to scope and polish a prototype
-                        under time constraints.
-                    </p>
-
-                    <p>
-                        I really enjoyed working with Unity and learning how technical decisions
-                        directly impact player experience.
-                        These projects played an important role in building my confidence
-                        as a game developer.
+                        Overall, these Unity projects were a very rewarding learning experience and played an
+                        important role in building both my technical skills and my portfolio.
                     </p>
 
                 </div>
