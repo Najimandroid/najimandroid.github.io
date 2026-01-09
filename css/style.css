@@ -302,15 +302,15 @@ code {
 
 /* Links inside technical content */
 .technical-content a {
-    color: #e6e6e6;
+    color: #bac4ff;
     text-decoration: underline;
-    text-decoration-color: rgba(186, 210, 255, 0.4);
+    text-decoration-color: rgba(230, 230, 230, 0.4);
     transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
     .technical-content a:hover {
-        color: #ffffff;
-        text-decoration-color: #ffffff;
+        color: #e3e7ff;
+        text-decoration-color: #e3e7ff;
     }
 
 /* ================================ */
